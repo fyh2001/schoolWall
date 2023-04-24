@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-19 00:43:01
- * @LastEditTime: 2023-04-22 01:28:27
+ * @LastEditTime: 2023-04-24 09:28:09
  * @FilePath: /schoolWall/src/utils/axios.js
  * @Description:
  */
@@ -9,8 +9,9 @@ import axios from "axios";
 import router from "../router/router";
 
 const instance = axios.create({
-  // baseURL: "http://127.0.0.1:8080",
-  baseURL: "http://192.168.31.141:8080/api",
+  // baseURL: "http://127.0.0.1:8080/api",
+  // baseURL: "http://192.168.31.141:8080/api",
+  baseURL: "http://192.168.224.22:8080/api",
   timeout: 30000, //最大请求时间
   headers: {
     "Content-Type": "application/json",

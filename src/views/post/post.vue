@@ -1,45 +1,47 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 10:53:29
- * @LastEditTime: 2023-04-22 04:45:47
+ * @LastEditTime: 2023-04-24 09:23:10
  * @FilePath: /schoolWall/src/views/post/post.vue
  * @Description: 
 -->
 <template>
   <div class="p-4 overflow-hidden">
-    <contentBox
-      class="block mb-4"
-      :content-data="postData"
-      type-of-display="post"
-    />
-    <commentForm
-      class="block mb-4"
-      placeholder="回点什么呢~"
-      button-text="评论"
-      :button-func="submit"
-      submission-type="reply"
-      :post-id="id"
-    />
-    <tabs
-      class="block mb-4"
-      :tab-list="['最新评论', '最早评论']"
-      :tab-start-index="0"
-    />
-    <contentBox
-      class="block mb-4"
-      :content-data="replyToPostDataData"
-      type-of-display="replyToPost"
-      @change-like-status-index="changeLikeStatus"
-    />
+    <Transition name="contentBox-post" appear>
+      <contentBox
+        class="block mb-4"
+        :content-data="postData"
+        type-of-display="post"
+      />
+    </Transition>
+    <Transition name="commentForm" appear>
+      <commentForm
+        class="block mb-4"
+        placeholder="回点什么呢~"
+        button-text="评论"
+        :button-func="submit"
+        submission-type="reply"
+        :post-id="id"
+      />
+    </Transition>
+    <Transition name="DeTabs" appear>
+      <DeTabs class="block mb-4" :list="['最新评论', '最早评论']" />
+    </Transition>
+    <Transition name="contentBox-reply" appear>
+      <contentBox
+        class="block mb-4"
+        :content-data="replyToPostDataData"
+        type-of-display="replyToPost"
+        @change-like-status-index="changeLikeStatus"
+      />
+    </Transition>
   </div>
 </template>
 
 <script setup>
-import postBox from "./components/postBox.vue";
+import DeTabs from "../../components/DeTabs.vue";
 import commentForm from "../../components/commentForm.vue";
 import contentBox from "../../components/contentBox.vue";
-import tabs from "../../components/tabs.vue";
-import replyBox from "./components/replyBox.vue";
 import postApi from "../../api/post";
 import replyApi from "../../api/reply";
 import timeFormat from "../../utils/timeFormat";
@@ -141,3 +143,55 @@ onMounted(() => {
   getReplyToPostData(parseInt(props.id));
 });
 </script>
+
+<style contentBox>
+.contentBox-post-enter-active,
+.contentBox-post-leave-active {
+  transition: all 0.3s ease;
+}
+
+.contentBox-post-enter-from,
+.contentBox-post-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+
+/* ------------------------- */
+
+.commentForm-enter-active,
+.commentForm-leave-active {
+  transition: all 0.4s ease;
+}
+
+.commentForm-enter-from,
+.commentForm-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+
+/* ------------------------- */
+
+.DeTabs-enter-active,
+.DeTabs-leave-active {
+  transition: all 0.5s ease;
+}
+
+.DeTabs-enter-from,
+.DeTabs-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+
+/* ------------------------- */
+
+.contentBox-reply-enter-active,
+.contentBox-reply-leave-active {
+  transition: all 0.6s ease;
+}
+
+.contentBox-reply-enter-from,
+.contentBox-reply-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+</style>

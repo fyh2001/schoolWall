@@ -15,12 +15,7 @@
           @input="() => (textareaLength = textContent.length)"
         />
         <div class="flex justify-between pt-2">
-          <img
-            class="w-25px h-25px"
-            v-for="(data, index) in emoji"
-            :src="data.url"
-            :key="index"
-          />
+          <div class="text-6" v-for="(data, index) in emojiData.slice(0, 8)" @click="addEmoji(index)">{{ data }}</div>
           <img src="../../dist/icon/smile-circle-outline.svg" />
         </div>
         <div class="flex mt-4 justify-between">
@@ -41,7 +36,7 @@
       </div>
       <div class="flex justify-between mt-4">
         <div class="flex items-center px-2">
-          <div>黄叶</div>
+          <div>{{ userStore.user.nickname }}</div>
           <img
             src="../../dist/icon/edit.svg"
             style="width: 16px; height: 16px; margin-left: 0.5rem"
@@ -76,7 +71,11 @@
 </template>
 
 <script setup>
+import emoji from "../utils/emoji"
+import { useUserStore } from "../store/userStore";
 import { ref, computed } from "vue";
+
+const userStore = useUserStore()
 
 const props = defineProps({
   buttonText: {
@@ -110,6 +109,13 @@ const isAnonymous = ref(false);
 const textContent = ref("");
 const textareaLength = ref(0);
 
+const addEmoji = (index) => {
+  // console.log(emojiData[index])
+  console.log(textContent.value + emojiData[index])
+
+  textContent.value += emojiData[index]
+}
+
 const submit = () => {
   if (props.submissionType == "post") {
     const formData = {
@@ -130,35 +136,8 @@ const submit = () => {
 
 const style = ref("border-color: red;");
 
-const emoji = [
-  {
-    url: "/dist/icon/emoji.jpg",
-  },
-  {
-    url: "/dist/icon/emoji2.jpg",
-  },
-  {
-    url: "/dist/icon/emoji3.jpg",
-  },
-  {
-    url: "/dist/icon/emoji4.jpg",
-  },
-  {
-    url: "/dist/icon/emoji5.jpg",
-  },
-  {
-    url: "/dist/icon/emoji6.jpg",
-  },
-  {
-    url: "/dist/icon/emoji7.jpg",
-  },
-  {
-    url: "/dist/icon/emoji8.jpg",
-  },
-  {
-    url: "/dist/icon/emoji9.jpg",
-  },
-];
+const emojiData = emoji.data
+console.log(emojiData)
 </script>
 
 <style></style>

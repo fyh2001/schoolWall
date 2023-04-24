@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-18 21:42:04
- * @LastEditTime: 2023-04-19 19:55:38
+ * @LastEditTime: 2023-04-24 12:45:21
  * @FilePath: /schoolWall/src/main.js
  * @Description: 
  */
@@ -18,7 +18,11 @@ import 'uno.css'
 
 // pinia全局状态管理
 import { createPinia } from 'pinia'
-app.use(createPinia())
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate' // pinia持久化插件
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+app.use(pinia)
+
 
 //vue-router路由管理
 import router from "./router/router";

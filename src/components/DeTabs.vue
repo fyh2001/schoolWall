@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-21 11:25:50
- * @LastEditTime: 2023-04-21 14:36:12
+ * @LastEditTime: 2023-04-24 08:45:31
  * @FilePath: /schoolWall/src/components/DeTabs.vue
  * @Description: 
 -->
@@ -71,9 +71,9 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .tabs {
-  @apply flex bg-white rounded-lg bg-opacity-65 backdrop-blur-30 items-center px-2 py-2;
+  @apply flex justify-between bg-white rounded-lg bg-opacity-65 backdrop-blur-30 items-center px-2 py-2;
 }
 .checkBox {
   @apply absolute bg-white rounded duration-300 ;
@@ -83,7 +83,7 @@ onMounted(() => {
 }
 .tabs-item {
   /* @apply flex-1 */
-  @apply w-15 py-1 text-gray-5 text-center z-1 rounded-lg duration-300;
+  @apply w-full py-1 text-gray-5 text-center z-1 rounded-lg duration-300;
 }
 
 .tabs-item--selected {

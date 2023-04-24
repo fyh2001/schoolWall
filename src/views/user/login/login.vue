@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 18:38:09
- * @LastEditTime: 2023-04-22 02:44:34
+ * @LastEditTime: 2023-04-24 16:01:55
  * @FilePath: /schoolWall/src/views/user/login/login.vue
  * @Description: 
 -->
@@ -79,8 +79,10 @@ import DeButton from "../../../components/DeButton.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import userApi from "../../../api/user";
+import { useUserStore } from "../../../store/userStore";
 
 const router = useRouter();
+const userStore = useUserStore()
 
 const userData = ref({
   username: "",
@@ -90,7 +92,7 @@ const userData = ref({
 const submit = async () => {
   if (userData.value.username != "" && userData.value.password != "") {
     const res = await userApi.login(userData.value);
-    console.log(res);
+    console.log(res.data);
     if (res.code == 0) {
       // 用户名或密码错误
       ElMessage({
@@ -100,8 +102,14 @@ const submit = async () => {
       });
     } else {
       ElMessage.success("登录成功!")
-      localStorage.setItem("token", res.data);
-      router.back(1)
+      localStorage.setItem("token", res.data.token);
+      userStore.updataUser({
+        userId: res.data.id,
+        username: res.data.username,
+        nickname: res.data.nickname
+      })
+      console.log(userStore.user)
+      // router.back(1)
     }
   }else{
     ElMessage({
