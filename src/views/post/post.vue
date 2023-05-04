@@ -1,12 +1,12 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 10:53:29
- * @LastEditTime: 2023-04-24 09:23:10
+ * @LastEditTime: 2023-04-30 20:21:36
  * @FilePath: /schoolWall/src/views/post/post.vue
  * @Description: 
 -->
 <template>
-  <div class="p-4 overflow-hidden">
+  <div class="p-4 overflow-hidden" v-if="isLoding">
     <Transition name="contentBox-post" appear>
       <contentBox
         class="block mb-4"
@@ -45,11 +45,16 @@ import contentBox from "../../components/contentBox.vue";
 import postApi from "../../api/post";
 import replyApi from "../../api/reply";
 import timeFormat from "../../utils/timeFormat";
+import { useUserStore } from "../../store/userStore";
 import { ref, onMounted } from "vue";
+
+const userStore = useUserStore();
 
 const props = defineProps({
   id: String,
 });
+
+const isLoding = ref(false);
 
 /**
  * 发布新回复
@@ -61,7 +66,7 @@ const submit = async (formData) => {
     const res = await replyApi.add(formData);
     console.log(res);
     if (res.code == 1) {
-      res.data.nickname = "黄叶";
+      res.data.nickname = userStore.user.nickname;
       res.data.likes = 0;
       res.data.createTime = "片刻之前";
       res.data.text = textWraFormat(res.data.text);
@@ -78,10 +83,12 @@ const postData = ref([]);
  * @param {*} id 帖子id
  */
 const getPostData = async (id) => {
-  const { data } = await postApi.getById(id);
+  const { data } = await postApi.getByPostId(id);
   data.text = textWraFormat(data.text);
   data.createTime = timeFormat.getFormateTime(data.createTime);
+  data.updateTime = timeFormat.getFormateTime(data.updateTime);
   postData.value.push(data);
+  isLoding.value = true;
 };
 
 // 回复信息
@@ -99,6 +106,7 @@ const getReplyToPostData = async (id) => {
     replyToPostDataData.value.forEach((data) => {
       data.text = textWraFormat(data.text);
       data.createTime = timeFormat.getFormateTime(data.createTime);
+      data.updateTime = timeFormat.getFormateTime(data.updateTime);
     });
     replyToPostDataData.value.reverse();
   }

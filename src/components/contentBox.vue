@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-18 23:59:28
- * @LastEditTime: 2023-04-24 08:55:45
+ * @LastEditTime: 2023-04-30 23:33:31
  * @FilePath: /schoolWall/src/components/contentBox.vue
  * @Description: 
 -->
@@ -14,7 +14,7 @@
           style="box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 8px"
           v-for="(data, index) in contentData"
           :key="index"
-          @click="typeOfDisplay == 'post' ? goToPostPage(data.id) : {}"
+          @click="emit('boxClick', data.id)"
         >
           <div class="flex justify-between mb-2">
             <div class="flex">
@@ -70,44 +70,20 @@
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import router from "../router/router";
-import postApi from "../api/post";
+
 // import { ElMessage } from "element-plus";
 
-const emit = defineEmits(["changeLikeStatusIndex"]);
-
+const emit = defineEmits(["boxClick", "changeLikeStatusIndex"]);
 const props = defineProps({
   /**
    * 显示的数据
    */
   contentData: Object,
-  clickFunc: Function,
   /**
    * 显示的数据类型: 帖子/回复
    */
   typeOfDisplay: String,
 });
-
-/**
- * 跳转到具体的帖子页面
- * @param {number} id 帖子id
- */
-const goToPostPage = (id) => {
-  if (localStorage.getItem("token") == null) {
-    ElMessageBox.confirm("查看内容需要登录", "需要登录", {
-      type: "warning",
-      confirmButtonText: "前往登录",
-      cancelButtonText: "我再看看",
-    })
-      .then(() => {
-        router.push("/login");
-        return;
-      })
-      .catch(() => {});
-  } else {
-    router.push(`/post/${id}`);
-  }
-};
 
 onMounted(() => {});
 </script>

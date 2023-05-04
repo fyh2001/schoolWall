@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 18:38:15
- * @LastEditTime: 2023-04-22 02:42:24
+ * @LastEditTime: 2023-05-04 14:25:41
  * @FilePath: /schoolWall/src/views/user/register/register.vue
  * @Description: 
 -->
@@ -75,7 +75,7 @@ const submit = async () => {
     if (res.code == 0) {
       // 用户名或密码错误
       ElMessage({
-        message: "注册失败,请稍后重试或联系客服!",
+        message: `${res.msg},请稍后重试或联系客服!`,
         type: "warning",
         grouping: true,
       });

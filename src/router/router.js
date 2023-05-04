@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-18 23:10:07
- * @LastEditTime: 2023-04-20 22:34:42
+ * @LastEditTime: 2023-04-30 16:43:33
  * @FilePath: /schoolWall/src/router/router.js
  * @Description: 
  */
@@ -43,7 +43,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/schoolWall'),
   routes,
 });
 

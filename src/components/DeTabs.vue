@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-21 11:25:50
- * @LastEditTime: 2023-04-24 08:45:31
+ * @LastEditTime: 2023-05-01 01:16:06
  * @FilePath: /schoolWall/src/components/DeTabs.vue
  * @Description: 
 -->
@@ -11,10 +11,7 @@
     <div
       v-for="(data, index) in list"
       :key="index"
-      :class="[
-        'tabs-item',
-        index == selectedIndex ? 'tabs-item--selected' : '',
-      ]"
+      :class="['tabs-item', index == selectIndex ? 'tabs-item--selected' : '']"
       @click="selectChange(index)"
     >
       {{ data }}
@@ -23,9 +20,8 @@
 </template>
 
 <script setup>
-import gsap from "gsap";
 import { ref } from "@vue/reactivity";
-import { onMounted } from "@vue/runtime-core";
+import { onMounted, watch } from "@vue/runtime-core";
 
 const props = defineProps({
   list: Array,
@@ -37,23 +33,28 @@ const props = defineProps({
 });
 
 const tabs = ref();
-const tabItem = ref();
-const selectedIndex = ref(0);
 const checkBoxSize = ref({
   width: 0,
   height: 0,
   top: 0,
   left: 0,
-  tabX: 0
+  tabX: 0,
 });
 
 // [submit]为菜单组件中分支绑定方法
 const emit = defineEmits(["change", "submit", "selectValueChange"]);
 
+watch(
+  props.selectIndex,
+  (index) => {
+    console.log(index);
+    selectChange(index);
+  },
+);
+
 function selectChange(index) {
-  selectedIndex.value = index;
   emit("change", index);
-  emit("selectValueChange", props.list[index])
+  // emit("selectValueChange", props.list[index]);
   const rect = tabs.value
     .querySelectorAll(".tabs-item")
     [index].getBoundingClientRect();
@@ -62,7 +63,7 @@ function selectChange(index) {
     height: rect.height + 4,
     left: rect.left,
     top: rect.top,
-    tabX: tabs.value.getBoundingClientRect().left
+    tabX: tabs.value.getBoundingClientRect().left,
   };
 }
 
@@ -76,7 +77,7 @@ onMounted(() => {
   @apply flex justify-between bg-white rounded-lg bg-opacity-65 backdrop-blur-30 items-center px-2 py-2;
 }
 .checkBox {
-  @apply absolute bg-white rounded duration-300 ;
+  @apply absolute bg-white rounded duration-300;
   width: v-bind("checkBoxSize.width+'px'");
   height: v-bind("checkBoxSize.height+'px'");
   left: v-bind("checkBoxSize.left-checkBoxSize.tabX+'px'");
@@ -89,5 +90,4 @@ onMounted(() => {
 .tabs-item--selected {
   @apply text-gray-8 duration-300;
 }
-
 </style>

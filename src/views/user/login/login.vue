@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 18:38:09
- * @LastEditTime: 2023-04-24 16:01:55
+ * @LastEditTime: 2023-04-24 18:44:41
  * @FilePath: /schoolWall/src/views/user/login/login.vue
  * @Description: 
 -->
@@ -109,7 +109,7 @@ const submit = async () => {
         nickname: res.data.nickname
       })
       console.log(userStore.user)
-      // router.back(1)
+      router.back(1)
     }
   }else{
     ElMessage({

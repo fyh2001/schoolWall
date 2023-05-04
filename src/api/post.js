@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-19 23:39:53
- * @LastEditTime: 2023-04-22 00:55:22
+ * @LastEditTime: 2023-04-29 13:32:34
  * @FilePath: /schoolWall/src/api/post.js
  * @Description:
  */
@@ -21,13 +21,13 @@ postApi.getAll = () => {
 
 /**
  * 通过帖子id获取帖子信息
- * @param {number} id 
+ * @param {number} postId 
  * @returns 
  */
-postApi.getById = (id) => {
+postApi.getByPostId = (postId) => {
   return request({
     method: "GET",
-    url: `/post/getById?id=${id}`,
+    url: `/post/getByPostId?postId=${postId}`,
   });
 };
 
@@ -63,8 +63,41 @@ postApi.giveLike = (postId) => {
  */
 postApi.cancelLike = (postId) => {
   return request({
-    method: "POST",
+    method: "DELETE",
     url: `/post/cancelLike?postId=${postId}`,
+  })
+}
+
+/**
+ * 查询登录用户发的帖子
+ * @returns 
+ */
+postApi.getByUserId = () => {
+  return request({
+    method: "GET",
+    url: "/post/getByUserId"
+  })
+}
+
+/**
+ * 查询登录用户回复的帖子
+ * @returns 
+ */
+postApi.getMyRepliedPosts = () => {
+  return request({
+    method: "GET",
+    url: "/post/getMyRepliedPostsByUserId"
+  })
+}
+
+/**
+ * 查询登录用户点赞过的帖子
+ * @returns 
+ */
+postApi.getLikedPostsByUserId = () => {
+  return request({
+    method: "GET",
+    url: "/post/getLikedPostsByUserId"
   })
 }
 export default postApi;

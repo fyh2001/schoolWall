@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-18 21:42:04
- * @LastEditTime: 2023-04-24 12:45:21
+ * @LastEditTime: 2023-04-30 00:44:45
  * @FilePath: /schoolWall/src/main.js
  * @Description: 
  */
@@ -32,5 +32,8 @@ app.use(router);
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import '@arco-design/web-vue/dist/arco.css'
 app.use(ArcoVueIcon);
+
+import AsyncComputed from 'vue-async-computed'
+app.use(AsyncComputed)
 
 app.mount("#app")

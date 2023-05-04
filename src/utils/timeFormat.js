@@ -1,4 +1,11 @@
-// 时间优化（片刻之前、x小时前、x天前）
+/*
+ * @Author: 黄叶
+ * @Date: 2023-04-22 01:35:33
+ * @LastEditTime: 2023-04-29 13:42:22
+ * @FilePath: /schoolWall/src/utils/timeFormat.js
+ * @Description: 
+ */
+// 时间格式化（片刻之前、x小时前、x天前）
 const Time = {
     //获取时间戳
     getUNIX : () => {
@@ -59,7 +66,8 @@ const Time = {
             seconde = "0" + seconde;
         }
         let newDate =
-            year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + seconde
+            // year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + seconde
+            year + "-" + month + "-" + day
 
         return newDate;
     },
@@ -86,10 +94,10 @@ const Time = {
             tip = Math.floor(timer / 60) + '分钟前';
         } else if (timer >= 3600 && (timesTamp - today >= 0)) {
             tip = Math.floor(timer / 3600) + '小时前';
-        } else if (timer / 86400 <= 7) {
+        } else if (timer / 86400 <= 30) {
             tip = Math.ceil(timer / 86400) + '天前';
         } else {
-            tip = this.setDate(new Date(timesTamp));
+            tip = Time.setDate(new Date(timesTamp));
         }
         return tip;
     }

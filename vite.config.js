@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-18 21:42:04
- * @LastEditTime: 2023-04-19 19:26:53
+ * @LastEditTime: 2023-04-30 16:39:31
  * @FilePath: /schoolWall/vite.config.js
  * @Description:
  */
@@ -16,6 +16,7 @@ import { ArcoResolver } from "unplugin-vue-components/resolvers";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/schoolWall',
   plugins: [
     vue(),
     UnoCSS({ transformers: [transformerDirective()] }),

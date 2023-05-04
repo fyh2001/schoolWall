@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-18 21:42:04
- * @LastEditTime: 2023-04-20 22:54:29
+ * @LastEditTime: 2023-04-30 16:34:45
  * @FilePath: /schoolWall/src/App.vue
  * @Description: 
 -->
@@ -17,7 +17,7 @@ onMounted(() => {});
 
 <style>
 body {
-  background-image: url("../../../dist/bg.jpg");
+  background-image: url("../public/bg.jpg");
   background-size: 100% 100%;
   background-attachment: fixed;
 }
