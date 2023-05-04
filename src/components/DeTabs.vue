@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-21 11:25:50
- * @LastEditTime: 2023-05-04 18:50:07
+ * @LastEditTime: 2023-05-04 18:55:41
  * @FilePath: /schoolWall/src/components/DeTabs.vue
  * @Description: 
 -->
@@ -77,8 +77,8 @@ onMounted(() => {
   @apply flex justify-between bg-white rounded-lg bg-opacity-65 backdrop-blur-30 items-center px-2 py-2;
 }
 .checkBox {
-  @apply absolute bg-white rounded duration-300 shadow-lg;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 3px 8px;
+  @apply absolute bg-white rounded duration-300;
+  /* box-shadow: rgba(0, 0, 0, 0.1) 0px 3px 8px; */
   width: v-bind("checkBoxSize.width+'px'");
   height: v-bind("checkBoxSize.height+'px'");
   left: v-bind("checkBoxSize.left-checkBoxSize.tabX+'px'");
