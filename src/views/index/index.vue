@@ -1,15 +1,15 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-18 23:33:34
- * @LastEditTime: 2023-05-02 01:15:30
+ * @LastEditTime: 2023-05-10 19:38:59
  * @FilePath: /schoolWall/src/views/index/index.vue
  * @Description: 
 -->
 
 <template>
   <div class="p-4 overflow-hidden">
-    <Transition name="commentForm" appear>
-      <commentForm
+    <Transition name="CommentForm" appear>
+      <CommentForm
         class="block mb-4 z-10"
         submission-type="post"
         @submit="submitPost($event)"
@@ -26,28 +26,28 @@
     <!-- <Transition name="search" appear>
       <search class="block mb-4" />
     </Transition> -->
-    <Transition name="contentBox" appear>
-      <contentBox
-        :content-data="postsData"
-        type-of-display="post"
-        @changeLikeStatusIndex="changeLikeStatus"
-        @box-click="goToPostPage($event)"
-      />
+    <Transition name="ContentBox" appear>
+          <ContentBox
+            :content-data="postsData"
+            type-of-display="post"
+            @changeLikeStatusIndex="changeLikeStatus"
+            @box-click="goToPostPage($event)"
+          />
     </Transition>
   </div>
 </template>
 
 <script setup>
+import Swiper from "../../components/Swiper.vue";
 import timeFormat from "../../utils/timeFormat";
 import postApi from "../../api/post";
-import commentForm from "../../components/commentForm.vue";
-import contentBox from "../../components/contentBox.vue";
+import CommentForm from "../../components/CommentForm.vue";
+import ContentBox from "../../components/ContentBox.vue";
 import DeTabs from "../../components/DeTabs.vue";
 import search from "../../components/search.vue";
+import router from "../../router/router";
 import { useUserStore } from "../../store/userStore";
-import { ref, onMounted, computed, watch } from "vue";
 import { computedAsync } from "@vueuse/core";
-import { onBeforeMount } from "vue";
 
 const userStore = useUserStore();
 
@@ -144,6 +144,7 @@ const tabsSelectIndex = ref(3);
 watch(
   tabsSelectIndex,
   async (newIndex) => {
+    console.log(newIndex);
     switch (newIndex) {
       case 0:
         if (userPostsData != null) {
@@ -183,7 +184,7 @@ watch(
         } else {
           postsData.value = await getLatestPosts();
           latestPostsData = postsData.value;
-        } 
+        }
         break;
     }
   },
@@ -216,18 +217,34 @@ const changeLikeStatus = async (index) => {
  * 跳转到具体的帖子页面
  * @param {number} id 帖子id
  */
+
 const goToPostPage = (id) => {
   if (localStorage.getItem("token") == null) {
-    ElMessageBox.confirm("查看内容需要登录", "需要登录", {
-      type: "warning", 
-      confirmButtonText: "前往登录", 
-      cancelButtonText: "我再看看", 
-    })
-      .then(() => {
+    window.$dialog.warning({
+      title: "需要登录",
+      content: "查看内容需要登录",
+      positiveText: "前往登录",
+      negativeText: "我再看看",
+      style: "border-radius: 10px;",
+      positiveStyle: "border-radius: 10px;",
+      // loading: true,
+      // 确认按钮的属性
+      positiveButtonProps: {
+        ghost: false,
+        style: "border-radius: 8px; background-color: #f0a020",
+      },
+      //取消按钮的属性
+      negativeButtonProps: {
+        dashed: true,
+        style: "border-radius: 8px;",
+      },
+      onPositiveClick: () => {
         router.push("/login");
-        return;
-      })
-      .catch(() => {});
+      },
+      onNegativeClick: () => {
+        // message.error("不确定");
+      },
+    });
   } else {
     router.push(`/post/${id}`);
   }
@@ -238,6 +255,10 @@ const goToPostPage = (id) => {
  * @param {*} formData 表单数据
  */
 const submitPost = async (formData) => {
+  if (formData.text == null || formData.text == "") {
+    ElMessage.error("内容不能为空");
+    return;
+  }
   const res = await postApi.add(formData);
   console.log(res);
   if (res.code == 1) {
@@ -257,20 +278,22 @@ const submitPost = async (formData) => {
   }
 };
 
-onMounted(() => {});
+
+onMounted(() => {
+});
 onBeforeMount(() => {
   // tabsSelectIndex.value = 3;
 });
 </script>
 
 <style scoped>
-.commentForm-enter-active,
-.commentForm-leave-active {
+.CommentForm-enter-active,
+.CommentForm-leave-active {
   transition: all 0.3s ease;
 }
 
-.commentForm-enter-from,
-.commentForm-leave-to {
+.CommentForm-enter-from,
+.CommentForm-leave-to {
   transform: translateX(-20px);
   opacity: 0;
 }
@@ -302,13 +325,13 @@ onBeforeMount(() => {
 
 /* -------------------------- */
 
-.contentBox-enter-active,
-.contentBox-leave-active {
+.ContentBox-enter-active,
+.ContentBox-leave-active {
   transition: all 0.55s ease;
 }
 
-.contentBox-enter-from,
-.contentBox-leave-to {
+.ContentBox-enter-from,
+.ContentBox-leave-to {
   transform: translateX(-20px);
   opacity: 0;
 }

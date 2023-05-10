@@ -78,9 +78,18 @@
             "
             >{{ isAnonymous ? "已匿名" : "未匿名" }}</text
           > -->
-          <button w-15 h-8 ml-4 rounded-3 bg-green text-white @click="emit('submit', formDataHandle())" >
+          <!-- <button
+            w-15
+            h-8
+            ml-4
+            rounded-3
+            bg-green
+            text-white
+            @click="emit('submit', formDataHandle())"
+          >
             {{ buttonText }}
-          </button>
+          </button> -->
+          <n-button class="ml-4 rounded-3" strong  type="primary" @click="emit('submit', formDataHandle())">{{ buttonText }}</n-button>
         </div>
       </div>
     </div>
@@ -153,7 +162,7 @@ const formDataHandle = () => {
     text: textContent.value,
   };
   return data;
-}
+};
 
 const addEmoji = (emoji) => {
   // console.log(emojiData[index])

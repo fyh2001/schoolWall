@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-18 21:42:04
- * @LastEditTime: 2023-04-30 00:44:45
+ * @LastEditTime: 2023-05-05 10:41:25
  * @FilePath: /schoolWall/src/main.js
  * @Description: 
  */
@@ -33,7 +33,13 @@ import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import '@arco-design/web-vue/dist/arco.css'
 app.use(ArcoVueIcon);
 
+//异步计算属性
 import AsyncComputed from 'vue-async-computed'
 app.use(AsyncComputed)
+
+//NaiveUI组件库
+// const meta = document.createElement('meta')
+// meta.name = 'naive-ui-style'
+// document.head.appendChild(meta)
 
 app.mount("#app")

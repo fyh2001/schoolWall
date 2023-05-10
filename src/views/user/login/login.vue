@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 18:38:09
- * @LastEditTime: 2023-04-24 18:44:41
+ * @LastEditTime: 2023-05-04 16:35:56
  * @FilePath: /schoolWall/src/views/user/login/login.vue
  * @Description: 
 -->
@@ -46,7 +46,7 @@
       </div>
     </div>
     <div relative mt-30>
-      <DeButton
+      <!-- <DeButton
         class="absolute left-1/2 -translate-x-1/2 w-20 h-20"
         style="border-radius: 9999px; background-color: #f2f3f5"
         type="default"
@@ -60,7 +60,13 @@
             color: #fff;
           "
         />
-      </DeButton>
+      </DeButton> -->
+
+      <n-button class="absolute left-1/2 -translate-x-1/2 scale-120 w-22 h-14 rounded-xl" type="tertiary"  ghost size="large" :loading="isloding" @click="submit">
+        <template #icon>
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M22 16L12 26l-1.4-1.4l8.6-8.6l-8.6-8.6L12 6z" fill="currentColor"></path></svg>
+        </template>
+      </n-button>
     </div>
     <!-- 同意事项 -->
     <!-- <div class="absolute left-1/2 -translate-x-1/2 bottom-8" v-show="hideshow">
@@ -89,26 +95,31 @@ const userData = ref({
   password: "",
 });
 
+const isloding = ref(false)
 const submit = async () => {
   if (userData.value.username != "" && userData.value.password != "") {
+    isloding.value = true
     const res = await userApi.login(userData.value);
-    console.log(res.data);
+    isloding.value = false
     if (res.code == 0) {
       // 用户名或密码错误
       ElMessage({
-        message: "账号或密码错误!",
+        message: res.msg,
         type: "warning",
         grouping: true,
       });
     } else {
-      ElMessage.success("登录成功!")
+      ElMessage({
+        message: res.msg,
+        type: "success",
+        grouping: true,
+      })
       localStorage.setItem("token", res.data.token);
       userStore.updataUser({
         userId: res.data.id,
         username: res.data.username,
         nickname: res.data.nickname
       })
-      console.log(userStore.user)
       router.back(1)
     }
   }else{

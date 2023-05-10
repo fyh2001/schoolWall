@@ -1,21 +1,21 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 10:53:29
- * @LastEditTime: 2023-04-30 20:21:36
+ * @LastEditTime: 2023-05-04 22:04:51
  * @FilePath: /schoolWall/src/views/post/post.vue
  * @Description: 
 -->
 <template>
   <div class="p-4 overflow-hidden" v-if="isLoding">
-    <Transition name="contentBox-post" appear>
-      <contentBox
+    <Transition name="ContentBox-post" appear>
+      <ContentBox
         class="block mb-4"
         :content-data="postData"
         type-of-display="post"
       />
     </Transition>
-    <Transition name="commentForm" appear>
-      <commentForm
+    <Transition name="CommentForm" appear>
+      <CommentForm
         class="block mb-4"
         placeholder="回点什么呢~"
         button-text="评论"
@@ -27,8 +27,8 @@
     <Transition name="DeTabs" appear>
       <DeTabs class="block mb-4" :list="['最新评论', '最早评论']" />
     </Transition>
-    <Transition name="contentBox-reply" appear>
-      <contentBox
+    <Transition name="ContentBox-reply" appear>
+      <ContentBox
         class="block mb-4"
         :content-data="replyToPostDataData"
         type-of-display="replyToPost"
@@ -40,8 +40,8 @@
 
 <script setup>
 import DeTabs from "../../components/DeTabs.vue";
-import commentForm from "../../components/commentForm.vue";
-import contentBox from "../../components/contentBox.vue";
+import CommentForm from "../../components/CommentForm.vue";
+import ContentBox from "../../components/ContentBox.vue";
 import postApi from "../../api/post";
 import replyApi from "../../api/reply";
 import timeFormat from "../../utils/timeFormat";
@@ -152,27 +152,27 @@ onMounted(() => {
 });
 </script>
 
-<style contentBox>
-.contentBox-post-enter-active,
-.contentBox-post-leave-active {
+<style ContentBox>
+.ContentBox-post-enter-active,
+.ContentBox-post-leave-active {
   transition: all 0.3s ease;
 }
 
-.contentBox-post-enter-from,
-.contentBox-post-leave-to {
+.ContentBox-post-enter-from,
+.ContentBox-post-leave-to {
   transform: translateX(-20px);
   opacity: 0;
 }
 
 /* ------------------------- */
 
-.commentForm-enter-active,
-.commentForm-leave-active {
+.CommentForm-enter-active,
+.CommentForm-leave-active {
   transition: all 0.4s ease;
 }
 
-.commentForm-enter-from,
-.commentForm-leave-to {
+.CommentForm-enter-from,
+.CommentForm-leave-to {
   transform: translateX(-20px);
   opacity: 0;
 }
@@ -192,13 +192,13 @@ onMounted(() => {
 
 /* ------------------------- */
 
-.contentBox-reply-enter-active,
-.contentBox-reply-leave-active {
+.ContentBox-reply-enter-active,
+.ContentBox-reply-leave-active {
   transition: all 0.6s ease;
 }
 
-.contentBox-reply-enter-from,
-.contentBox-reply-leave-to {
+.ContentBox-reply-enter-from,
+.ContentBox-reply-leave-to {
   transform: translateX(-20px);
   opacity: 0;
 }

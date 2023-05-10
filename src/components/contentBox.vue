@@ -1,13 +1,13 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-18 23:59:28
- * @LastEditTime: 2023-04-30 23:33:31
- * @FilePath: /schoolWall/src/components/contentBox.vue
+ * @LastEditTime: 2023-05-10 11:27:14
+ * @FilePath: /schoolWall/src/components/ContentBox.vue
  * @Description: 
--->
+--> 
 
 <template>
-  <div>
+  <div> 
     <div class="content">
         <div
           class="p-3 px-4 mb-4 rounded-xl shadow bg-white bg-opacity-65 backdrop-blur-30"
@@ -84,7 +84,7 @@ const props = defineProps({
    */
   typeOfDisplay: String,
 });
-
+console.log(props.contentData)
 onMounted(() => {});
 </script>
 
