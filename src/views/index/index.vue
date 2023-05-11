@@ -1,13 +1,13 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-18 23:33:34
- * @LastEditTime: 2023-05-10 19:38:59
+ * @LastEditTime: 2023-05-11 04:47:33
  * @FilePath: /schoolWall/src/views/index/index.vue
  * @Description: 
 -->
 
 <template>
-  <div class="p-4 overflow-hidden">
+  <div class="p-4  overflow-hidden">
     <Transition name="CommentForm" appear>
       <CommentForm
         class="block mb-4 z-10"

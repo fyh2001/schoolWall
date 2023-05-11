@@ -1,12 +1,12 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 10:53:29
- * @LastEditTime: 2023-05-04 22:04:51
+ * @LastEditTime: 2023-05-11 04:51:40
  * @FilePath: /schoolWall/src/views/post/post.vue
  * @Description: 
 -->
 <template>
-  <div class="p-4 overflow-hidden" v-if="isLoding">
+  <div class="p-4 overflow-hidden " v-if="isLoding">
     <Transition name="ContentBox-post" appear>
       <ContentBox
         class="block mb-4"
@@ -152,7 +152,7 @@ onMounted(() => {
 });
 </script>
 
-<style ContentBox>
+<style scoped>
 .ContentBox-post-enter-active,
 .ContentBox-post-leave-active {
   transition: all 0.3s ease;
