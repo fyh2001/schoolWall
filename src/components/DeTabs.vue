@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-21 11:25:50
- * @LastEditTime: 2023-05-04 18:55:41
+ * @LastEditTime: 2023-05-11 16:19:51
  * @FilePath: /schoolWall/src/components/DeTabs.vue
  * @Description: 
 -->

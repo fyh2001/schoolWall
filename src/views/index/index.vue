@@ -1,20 +1,40 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-18 23:33:34
- * @LastEditTime: 2023-05-11 04:47:33
+ * @LastEditTime: 2023-05-13 02:09:51
  * @FilePath: /schoolWall/src/views/index/index.vue
  * @Description: 
 -->
 
 <template>
-  <div class="p-4  overflow-hidden">
-    <Transition name="CommentForm" appear>
-      <CommentForm
-        class="block mb-4 z-10"
-        submission-type="post"
-        @submit="submitPost($event)"
-      />
-    </Transition>
+  <div class="p-4 overflow-hidden">
+    <FormEditBox
+      :show="isFormEditBoxShow"
+      @close="() => (isFormEditBoxShow = false)"
+      @submit="submitPost($event)"
+    />
+    <FloatingButton
+      class="right-5 bottom-12"
+      v-if="!isFormEditBoxShow"
+      @click="isFormEditBoxShow = true"
+    >
+      <svg 
+        class="w-6 h-6"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        viewBox="0 0 1024 1024"
+      >
+        <defs></defs>
+        <path
+          d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"
+          fill="currentColor"
+        ></path>
+        <path
+          d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z"
+          fill="currentColor"
+        ></path>
+      </svg>
+    </FloatingButton>
     <Transition name="DeTabs" appear>
       <DeTabs
         class="sticky top-0 block mb-4"
@@ -27,21 +47,22 @@
       <search class="block mb-4" />
     </Transition> -->
     <Transition name="ContentBox" appear>
-          <ContentBox
-            :content-data="postsData"
-            type-of-display="post"
-            @changeLikeStatusIndex="changeLikeStatus"
-            @box-click="goToPostPage($event)"
-          />
+      <ContentBox
+        :content-data="postsData"
+        type-of-display="post"
+        @changeLikeStatusIndex="changeLikeStatus"
+        @box-click="goToPostPage($event)"
+      />
     </Transition>
   </div>
 </template>
 
 <script setup>
-import Swiper from "../../components/Swiper.vue";
 import timeFormat from "../../utils/timeFormat";
 import postApi from "../../api/post";
 import CommentForm from "../../components/CommentForm.vue";
+import FloatingButton from "../../components/FloatingButton.vue";
+import FormEditBox from "../../components/FormEditBox.vue";
 import ContentBox from "../../components/ContentBox.vue";
 import DeTabs from "../../components/DeTabs.vue";
 import search from "../../components/search.vue";
@@ -51,7 +72,8 @@ import { computedAsync } from "@vueuse/core";
 
 const userStore = useUserStore();
 
-const tabList = ["我发", "我回", "我赞", "新回", "新发", "精选", "热榜"];
+//"我发", "我回", "我赞", "新回", "新发", "精选", "热榜"
+const tabList = ["我发", "我回", "我赞", "新回", "新发"];
 
 /**
  * 帖子文本格式化
@@ -70,6 +92,9 @@ const postDataFormat = (postData) => {
     data.text = textWraFormat(data.text);
     data.createTime = timeFormat.getFormateTime(data.createTime);
     data.updateTime = timeFormat.getFormateTime(data.updateTime);
+    if (data.isTop == 1) {
+      postData.unshift(postData.splice(postData.indexOf(data), 1)[0]);
+    }
   });
 
   return postData;
@@ -254,6 +279,8 @@ const goToPostPage = (id) => {
  * 发布新帖子
  * @param {*} formData 表单数据
  */
+
+const isFormEditBoxShow = ref(false);
 const submitPost = async (formData) => {
   if (formData.text == null || formData.text == "") {
     ElMessage.error("内容不能为空");
@@ -278,9 +305,7 @@ const submitPost = async (formData) => {
   }
 };
 
-
-onMounted(() => {
-});
+onMounted(() => {});
 onBeforeMount(() => {
   // tabsSelectIndex.value = 3;
 });

@@ -1,27 +1,23 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 10:53:29
- * @LastEditTime: 2023-05-11 04:51:40
+ * @LastEditTime: 2023-05-13 02:42:36
  * @FilePath: /schoolWall/src/views/post/post.vue
  * @Description: 
 -->
 <template>
-  <div class="p-4 overflow-hidden " v-if="isLoding">
+  <div class="p-4 overflow-hidden" v-if="isLoding">
+    <FormEditBox
+      :show="isFormEditBoxShow"
+      @close="() => (isFormEditBoxShow = false)"
+      @submit="submitReply($event)"
+    />
     <Transition name="ContentBox-post" appear>
       <ContentBox
         class="block mb-4"
         :content-data="postData"
         type-of-display="post"
-      />
-    </Transition>
-    <Transition name="CommentForm" appear>
-      <CommentForm
-        class="block mb-4"
-        placeholder="回点什么呢~"
-        button-text="评论"
-        :button-func="submit"
-        submission-type="reply"
-        :post-id="id"
+        @box-click="isFormEditBoxShow = true"
       />
     </Transition>
     <Transition name="DeTabs" appear>
@@ -30,9 +26,9 @@
     <Transition name="ContentBox-reply" appear>
       <ContentBox
         class="block mb-4"
-        :content-data="replyToPostDataData"
-        type-of-display="replyToPost"
+        :content-data="replyToPostData"
         @change-like-status-index="changeLikeStatus"
+        @box-click="showFormEditBoxOfReply($event)"
       />
     </Transition>
   </div>
@@ -40,7 +36,7 @@
 
 <script setup>
 import DeTabs from "../../components/DeTabs.vue";
-import CommentForm from "../../components/CommentForm.vue";
+import FormEditBox from "../../components/FormEditBox.vue";
 import ContentBox from "../../components/ContentBox.vue";
 import postApi from "../../api/post";
 import replyApi from "../../api/reply";
@@ -61,17 +57,35 @@ const isLoding = ref(false);
  * @param {*} formData 表单数据
  * @param
  */
-const submit = async (formData) => {
-  if (formData.text != "") {
-    const res = await replyApi.add(formData);
-    console.log(res);
-    if (res.code == 1) {
-      res.data.nickname = userStore.user.nickname;
-      res.data.likes = 0;
-      res.data.createTime = "片刻之前";
-      res.data.text = textWraFormat(res.data.text);
-      replyToPostDataData.value.unshift(res.data);
-    }
+
+const isFormEditBoxShow = ref(false);
+const currentReplyId = ref(null);
+const showFormEditBoxOfReply = (id) => {
+  currentReplyId.value = id;
+  isFormEditBoxShow.value = true;
+};
+
+const submitReply = async (formData) => {
+  if (formData.text == null || formData.text == "") {
+    ElMessage.error("内容不能为空");
+    return;
+  }
+  if (currentReplyId.value == null) {
+    formData.postId = parseInt(props.id);
+  } else {
+    formData.targetReplyId = currentReplyId.value;
+  }
+  const res = await replyApi.add(formData);
+  if (res.code == 1) {
+    res.data = {
+      ...res.data,
+      nickname: userStore.user.nickname,
+      likes: 0,
+      createTime: "片刻之前",
+      text: textWraFormat(res.data.text),
+    };
+    replyToPostData.value.unshift(res.data);
+    currentReplyId.value = null;
   }
 };
 
@@ -92,7 +106,7 @@ const getPostData = async (id) => {
 };
 
 // 回复信息
-const replyToPostDataData = ref([]);
+const replyToPostData = ref([]);
 
 /**
  * 获取回复信息
@@ -102,13 +116,13 @@ const getReplyToPostData = async (id) => {
   const { data } = await replyApi.getByPostId(id);
   console.log(data);
   if (data.length > 0) {
-    replyToPostDataData.value = data;
-    replyToPostDataData.value.forEach((data) => {
+    replyToPostData.value = data;
+    replyToPostData.value.forEach((data) => {
       data.text = textWraFormat(data.text);
       data.createTime = timeFormat.getFormateTime(data.createTime);
       data.updateTime = timeFormat.getFormateTime(data.updateTime);
     });
-    replyToPostDataData.value.reverse();
+    replyToPostData.value.reverse();
   }
 };
 
@@ -118,27 +132,27 @@ const getReplyToPostData = async (id) => {
  */
 const changeLikeStatus = async (index) => {
   if (
-    replyToPostDataData.value[index].likeStatus == 0 ||
-    replyToPostDataData.value[index].likeStatus == null
+    replyToPostData.value[index].likeStatus == 0 ||
+    replyToPostData.value[index].likeStatus == null
   ) {
-    const res = await replyApi.giveLike(replyToPostDataData.value[index].id);
+    const res = await replyApi.giveLike(replyToPostData.value[index].id);
     ElMessage({
       message: res.data,
       type: "success",
       grouping: true,
     });
-    replyToPostDataData.value[index].likeStatus = 1;
-    replyToPostDataData.value[index].likes++;
+    replyToPostData.value[index].likeStatus = 1;
+    replyToPostData.value[index].likes++;
   } else {
-    const res = await replyApi.cancelLike(replyToPostDataData.value[index].id);
+    const res = await replyApi.cancelLike(replyToPostData.value[index].id);
     ElMessage({
       message: res.data,
       type: "success",
       grouping: true,
     });
     console.log(res);
-    replyToPostDataData.value[index].likeStatus = 0;
-    replyToPostDataData.value[index].likes--;
+    replyToPostData.value[index].likeStatus = 0;
+    replyToPostData.value[index].likes--;
   }
 };
 

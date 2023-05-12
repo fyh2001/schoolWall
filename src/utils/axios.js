@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-19 00:43:01
- * @LastEditTime: 2023-05-06 11:07:29
+ * @LastEditTime: 2023-05-13 02:42:00
  * @FilePath: /schoolWall/src/utils/axios.js
  * @Description:
  */
@@ -11,9 +11,9 @@ import { useDialog } from "naive-ui";
 
 const instance = axios.create({
   // baseURL: "http://127.0.0.1:8080/api",
-  // baseURL: "http://192.168.31.141:9119/api",
+  baseURL: "http://192.168.31.141:9119/api",
   // baseURL: "http://192.168.224.22:9119/api",
-  baseURL: "http://43.139.54.138:9119/api", 
+  // baseURL: "http://43.139.54.138:9119/api", 
   timeout: 30000, //最大请求时间
   headers: {
     "Content-Type": "application/json",

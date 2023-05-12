@@ -1,14 +1,14 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-18 23:59:28
- * @LastEditTime: 2023-05-10 11:27:14
+ * @LastEditTime: 2023-05-13 02:31:55
  * @FilePath: /schoolWall/src/components/ContentBox.vue
  * @Description: 
 --> 
 
 <template>
   <div> 
-    <div class="content">
+    <div class="content" >
         <div
           class="p-3 px-4 mb-4 rounded-xl shadow bg-white bg-opacity-65 backdrop-blur-30"
           style="box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 8px"
@@ -17,16 +17,22 @@
           @click="emit('boxClick', data.id)"
         >
           <div class="flex justify-between mb-2">
-            <div class="flex">
-              <div class="text-gray-5 mr-1.5"># {{ data.id }} ·</div>
+            <div class="flex items-center">
+              <div class="text-gray-5 mr-1.5"># {{ typeOfDisplay == 'post' ? data.id : index+1 }} ·</div>
               <div class="text-gray-5" v-if="data.anonymous == 0">
                 {{ data.nickname }}
               </div>
               <div
-                class="p-0.5 rounded bg-gray-4 bg-opacity-10 text-gray-5 -translate-y-0.5"
+                class="p-0.5 rounded bg-gray-4 bg-opacity-10 text-gray-5 "
                 v-if="data.anonymous == 1"
               >
                 匿名
+              </div>
+              <div
+                class="p-0.5 ml-0.5 rounded bg-gray-4 bg-opacity-70 text-white text-0.8 scale-85"
+                v-if="data.isTop == 1"
+              >
+                顶
               </div>
             </div>
             <div class="text-gray-5">{{ data.createTime }}</div>
@@ -80,7 +86,7 @@ const props = defineProps({
    */
   contentData: Object,
   /**
-   * 显示的数据类型: 帖子/回复
+   * 显示的数据类型: 帖子/回复 post/reply
    */
   typeOfDisplay: String,
 });
