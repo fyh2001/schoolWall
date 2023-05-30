@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 18:38:09
- * @LastEditTime: 2023-05-04 16:35:56
+ * @LastEditTime: 2023-05-29 23:55:07
  * @FilePath: /schoolWall/src/views/user/login/login.vue
  * @Description: 
 -->
@@ -62,9 +62,25 @@
         />
       </DeButton> -->
 
-      <n-button class="absolute left-1/2 -translate-x-1/2 scale-120 w-22 h-14 rounded-xl" type="tertiary"  ghost size="large" :loading="isloding" @click="submit">
+      <n-button
+        class="absolute left-1/2 -translate-x-1/2 scale-120 w-22 h-14 rounded-xl"
+        type="tertiary"
+        ghost
+        size="large"
+        :loading="isloding"
+        @click="submit"
+      >
         <template #icon>
-          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M22 16L12 26l-1.4-1.4l8.6-8.6l-8.6-8.6L12 6z" fill="currentColor"></path></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 32 32"
+          >
+            <path
+              d="M22 16L12 26l-1.4-1.4l8.6-8.6l-8.6-8.6L12 6z"
+              fill="currentColor"
+            ></path>
+          </svg>
         </template>
       </n-button>
     </div>
@@ -88,46 +104,48 @@ import userApi from "../../../api/user";
 import { useUserStore } from "../../../store/userStore";
 
 const router = useRouter();
-const userStore = useUserStore()
+const userStore = useUserStore();
 
 const userData = ref({
   username: "",
   password: "",
 });
 
-const isloding = ref(false)
+const isloding = ref(false);
 const submit = async () => {
   if (userData.value.username != "" && userData.value.password != "") {
-    isloding.value = true
+    isloding.value = true;
     const res = await userApi.login(userData.value);
-    isloding.value = false
-    if (res.code == 0) {
+    isloding.value = false;
+    console.log(res);
+    if (res.code === 200) {
+      ElMessage({
+        message: res.msg,
+        type: "success",
+        grouping: true,
+      });
+      localStorage.setItem("token", res.data.token);
+      userStore.updataUser({
+        userId: res.data.id,
+        username: res.data.username,
+        nickname: res.data.nickname,
+        avatar: res.data.avatar
+      });
+      router.back(1);
+    } else {
       // 用户名或密码错误
       ElMessage({
         message: res.msg,
         type: "warning",
         grouping: true,
       });
-    } else {
-      ElMessage({
-        message: res.msg,
-        type: "success",
-        grouping: true,
-      })
-      localStorage.setItem("token", res.data.token);
-      userStore.updataUser({
-        userId: res.data.id,
-        username: res.data.username,
-        nickname: res.data.nickname
-      })
-      router.back(1)
     }
-  }else{
+  } else {
     ElMessage({
       message: "账号或密码不能为空!",
       type: "warning",
-      grouping: true
-    })
+      grouping: true,
+    });
   }
 };
 </script>

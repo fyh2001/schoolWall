@@ -1,91 +1,176 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 10:53:29
- * @LastEditTime: 2023-05-13 02:42:36
+ * @LastEditTime: 2023-05-31 00:23:42
  * @FilePath: /schoolWall/src/views/post/post.vue
  * @Description: 
 -->
 <template>
-  <div class="p-4 overflow-hidden" v-if="isLoding">
-    <FormEditBox
-      :show="isFormEditBoxShow"
-      @close="() => (isFormEditBoxShow = false)"
-      @submit="submitReply($event)"
-    />
-    <Transition name="ContentBox-post" appear>
-      <ContentBox
-        class="block mb-4"
-        :content-data="postData"
-        type-of-display="post"
-        @box-click="isFormEditBoxShow = true"
+  <div class="min-h-screen bg-white overflow-hidden" v-if="isLoding">
+    <DeTopTabbar :data="postData" />
+    <Swiper
+      :modules="[Pagination]"
+      :slides-per-view="1"
+      :loop="true"
+      :pagination="{ clickable: true }"
+      :scrollbar="{ draggable: true }"
+    >
+      <SwiperSlide v-for="(data, index) in postData[0].imageUrl">
+        <img
+          class="max-w-full max-h-120"
+          :src="imageBaseUrl + data"
+          style="object-fit: cover"
+        />
+      </SwiperSlide>
+    </Swiper>
+    <div class="p-4">
+      <div class="mt-2">
+        <div class="text-4">{{ postData[0].text }}</div>
+      </div>
+
+      <div class="my-5 w-screen border-t" />
+
+      <DeContentBox
+        :post-user-id="postData[0].userId"
+        :content-data="replyData"
+        @changeSelectedTabsIndex="(index) => (selectedTabsIndex = index)"
+        @changeLikeStatus="changeLikeStatus"
+        @showFormEditBoxByDeskTypeIs2="showFormEditBoxHandleByReplyToReply"
+        @showFormEditBoxByDeskTypeIs3="showFormEditBoxHandleByReplyToReply2"
       />
-    </Transition>
-    <Transition name="DeTabs" appear>
-      <DeTabs class="block mb-4" :list="['最新评论', '最早评论']" />
-    </Transition>
-    <Transition name="ContentBox-reply" appear>
-      <ContentBox
-        class="block mb-4"
-        :content-data="replyToPostData"
-        @change-like-status-index="changeLikeStatus"
-        @box-click="showFormEditBoxOfReply($event)"
+
+      <DeBottomTabbar
+        :data="postData"
+        @showFormEditBox="showFormEditBoxHandleByReplyToPost"
+        @changeLikeStatus="changeLikeStatus"
       />
-    </Transition>
+      <DeFormEditBox
+        :show="isShowFormEditBox"
+        @close="() => (isShowFormEditBox = false)"
+        @submit="submitReply"
+      />
+    </div>
   </div>
 </template>
 
 <script setup>
-import DeTabs from "../../components/DeTabs.vue";
-import FormEditBox from "../../components/FormEditBox.vue";
-import ContentBox from "../../components/ContentBox.vue";
+import DeFormEditBox from "./components/DeFormEditBox.vue";
+import DeTopTabbar from "./components/DeTopTabbar.vue";
+import DeBottomTabbar from "./components/DeBottomTabbar.vue";
+import DeContentBox from "./components/DeContentBox.vue";
 import postApi from "../../api/post";
 import replyApi from "../../api/reply";
 import timeFormat from "../../utils/timeFormat";
+import config from "../../config/config";
 import { useUserStore } from "../../store/userStore";
-import { ref, onMounted } from "vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
+import "swiper/css";
+import "swiper/css/pagination";
+import post from "../../api/post";
 
 const userStore = useUserStore();
+const imageBaseUrl = config.baseURL + "/file/download?imagesNames=";
 
 const props = defineProps({
   id: String,
 });
 
+/**
+ * 回复tabs的当前下标
+ */
+const selectedTabsIndex = ref(0);
+
 const isLoding = ref(false);
+
+// 是否显示回复编辑框
+const isShowFormEditBox = ref(false);
+
+/**
+ * 显示回复编辑框(回复帖子)
+ */
+const showFormEditBoxHandleByReplyToPost = () => {
+  deskId.value = parseInt(props.id);
+  deskSecondId.value = null
+  deskType.value = 1;
+  isShowFormEditBox.value = true;
+};
+
+/**
+ * 显示回复编辑框(回复评论)
+ * @param {*} deskId 评论id
+ */
+const showFormEditBoxHandleByReplyToReply = (id) => {
+  deskId.value = id;
+  deskSecondId.value = null
+  deskType.value = 2;
+  isShowFormEditBox.value = true;
+};
+
+const showFormEditBoxHandleByReplyToReply2 = (desk, deskSecond) => {
+  deskId.value = desk;
+  deskSecondId.value = deskSecond
+  deskType.value = 3;
+  isShowFormEditBox.value = true;
+}
+
+const deskId = ref(null);
+const deskSecondId = ref(null)
+const deskType = ref(null);
 
 /**
  * 发布新回复
  * @param {*} formData 表单数据
- * @param
  */
-
-const isFormEditBoxShow = ref(false);
-const currentReplyId = ref(null);
-const showFormEditBoxOfReply = (id) => {
-  currentReplyId.value = id;
-  isFormEditBoxShow.value = true;
-};
-
-const submitReply = async (formData) => {
+const submitReply = async (formData, uploadHandle) => {
   if (formData.text == null || formData.text == "") {
     ElMessage.error("内容不能为空");
     return;
   }
-  if (currentReplyId.value == null) {
-    formData.postId = parseInt(props.id);
-  } else {
-    formData.targetReplyId = currentReplyId.value;
+
+  const images = await uploadHandle();
+
+  let imagesFormat = "";
+  if (images != null) {
+    images.forEach((item) => {
+      imagesFormat == ""
+        ? (imagesFormat = item.replace(/[\[\]\"]/g, ""))
+        : (imagesFormat += "," + item.replace(/[\[\]\"]/g, ""));
+    });
+
+    console.log(images);
   }
-  const res = await replyApi.add(formData);
-  if (res.code == 1) {
+  formData = {
+    ...formData,
+    images: imagesFormat == "" ? null : imagesFormat,
+    deskId: deskId.value,
+    deskSecondId: deskSecondId.value,
+    deskType: deskType.value,
+  };
+
+  console.log(formData);
+  const res = await replyApi.addReply(formData);
+  if (res.code == 200) {
     res.data = {
       ...res.data,
       nickname: userStore.user.nickname,
       likes: 0,
       createTime: "片刻之前",
       text: textWraFormat(res.data.text),
+      images: imagesFormat.split(","),
     };
-    replyToPostData.value.unshift(res.data);
-    currentReplyId.value = null;
+    if(deskType.value == 1){
+      replyData.value.push(res.data);
+    }else{
+      replyData.value.forEach((item, index) => {
+        if(item.id == deskId.value){
+          item.secondReplies.unshift(res.data)
+        }
+      })
+    }
+    ElMessage.success("发布成功");
+  } else {
+    ElMessage.error("发布失败");
   }
 };
 
@@ -97,32 +182,35 @@ const postData = ref([]);
  * @param {*} id 帖子id
  */
 const getPostData = async (id) => {
-  const { data } = await postApi.getByPostId(id);
+  const { data } = await postApi.getPostByPostId(id);
+
   data.text = textWraFormat(data.text);
   data.createTime = timeFormat.getFormateTime(data.createTime);
   data.updateTime = timeFormat.getFormateTime(data.updateTime);
   postData.value.push(data);
   isLoding.value = true;
+  console.log(postData.value);
 };
 
 // 回复信息
-const replyToPostData = ref([]);
+const replyData = ref([]);
 
 /**
  * 获取回复信息
- * @param {*} id 帖子id
+ * @param {*} postId 帖子ID
  */
-const getReplyToPostData = async (id) => {
-  const { data } = await replyApi.getByPostId(id);
+const getReplyData = async (postId) => {
+  const { data } = await replyApi.getReplyByPostId(postId);
   console.log(data);
   if (data.length > 0) {
-    replyToPostData.value = data;
-    replyToPostData.value.forEach((data) => {
+    replyData.value = data;
+    replyData.value.forEach((data) => {
       data.text = textWraFormat(data.text);
       data.createTime = timeFormat.getFormateTime(data.createTime);
       data.updateTime = timeFormat.getFormateTime(data.updateTime);
+      data.images = data.images.split(",");
     });
-    replyToPostData.value.reverse();
+    replyData.value.reverse();
   }
 };
 
@@ -130,29 +218,57 @@ const getReplyToPostData = async (id) => {
  * 修改点赞状态
  * @param {*} index 帖子在数组中的下标
  */
-const changeLikeStatus = async (index) => {
-  if (
-    replyToPostData.value[index].likeStatus == 0 ||
-    replyToPostData.value[index].likeStatus == null
-  ) {
-    const res = await replyApi.giveLike(replyToPostData.value[index].id);
-    ElMessage({
-      message: res.data,
-      type: "success",
-      grouping: true,
-    });
-    replyToPostData.value[index].likeStatus = 1;
-    replyToPostData.value[index].likes++;
-  } else {
-    const res = await replyApi.cancelLike(replyToPostData.value[index].id);
-    ElMessage({
-      message: res.data,
-      type: "success",
-      grouping: true,
-    });
-    console.log(res);
-    replyToPostData.value[index].likeStatus = 0;
-    replyToPostData.value[index].likes--;
+const changeLikeStatus = async (deskId, deskType, likeStatus) => {
+  // 修改对象为帖子
+  if (deskType == 1){
+    if (likeStatus == 0 || likeStatus == null) {
+      const res = await postApi.likePost(deskId);
+      ElMessage({
+        message: res.data,
+        type: "success",
+        grouping: true,
+      });
+
+      postData.value[0].likeStatus = 1;
+      postData.value[0].likes++;
+    } else {
+      const res = await postApi.unlikePost(deskId);
+      ElMessage({
+        message: res.data,
+        type: "success",
+        grouping: true,
+      });
+      postData.value[0].likeStatus = 0;
+      postData.value[0].likes--;
+    }
+  }
+  // 修改对象为回复
+  else if(deskType == 2){
+    if(likeStatus == 0 || likeStatus == null){
+      const res = await replyApi.likeReply(deskId);
+      ElMessage({
+        message: res.data,
+        type: "success",
+        grouping: true,
+      });
+      const reply = replyData.value.find((item) => item.id == deskId);
+      if (reply != null) {
+        reply.likeStatus = 1;
+        reply.likes++;
+      }
+    }else{
+      const res = await replyApi.unlikeReply(deskId);
+      ElMessage({
+        message: res.data,
+        type: "success",
+        grouping: true,
+      });
+      const reply = replyData.value.find((item) => item.id == deskId);
+      if (reply != null) {
+        reply.likeStatus = 0;
+        reply.likes--;
+      }
+    }
   }
 };
 
@@ -162,58 +278,28 @@ const textWraFormat = (text) => {
 
 onMounted(() => {
   getPostData(parseInt(props.id));
-  getReplyToPostData(parseInt(props.id));
+  getReplyData(parseInt(props.id));
 });
 </script>
 
 <style scoped>
-.ContentBox-post-enter-active,
-.ContentBox-post-leave-active {
-  transition: all 0.3s ease;
-}
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
 
-.ContentBox-post-enter-from,
-.ContentBox-post-leave-to {
-  transform: translateX(-20px);
-  opacity: 0;
-}
-
-/* ------------------------- */
-
-.CommentForm-enter-active,
-.CommentForm-leave-active {
-  transition: all 0.4s ease;
-}
-
-.CommentForm-enter-from,
-.CommentForm-leave-to {
-  transform: translateX(-20px);
-  opacity: 0;
-}
-
-/* ------------------------- */
-
-.DeTabs-enter-active,
-.DeTabs-leave-active {
-  transition: all 0.5s ease;
-}
-
-.DeTabs-enter-from,
-.DeTabs-leave-to {
-  transform: translateX(-20px);
-  opacity: 0;
-}
-
-/* ------------------------- */
-
-.ContentBox-reply-enter-active,
-.ContentBox-reply-leave-active {
-  transition: all 0.6s ease;
-}
-
-.ContentBox-reply-enter-from,
-.ContentBox-reply-leave-to {
-  transform: translateX(-20px);
-  opacity: 0;
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
 }
 </style>

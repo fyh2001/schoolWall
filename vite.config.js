@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-18 21:42:04
- * @LastEditTime: 2023-05-04 18:27:11
+ * @LastEditTime: 2023-05-19 20:33:27
  * @FilePath: /schoolWall/vite.config.js
  * @Description:
  */
@@ -14,6 +14,7 @@ import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import { ArcoResolver } from "unplugin-vue-components/resolvers";
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
+import { VantResolver } from 'unplugin-vue-components/resolvers';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -32,6 +33,14 @@ export default defineConfig({
             "useLoadingBar",
           ],
         },
+        // "@vicons/antd",
+        // "@vicons/carbon",
+        // "@vicons/fa",
+        // "@vicons/fluent",
+        // "@vicons/ionicons4",
+        // "@vicons/ionicons5",
+        // "@vicons/material",
+        // "@vicons/tabler"
       ],
       resolvers: [ElementPlusResolver(), ArcoResolver(), NaiveUiResolver()],
     }),
@@ -42,6 +51,7 @@ export default defineConfig({
           sideEffect: true,
         }),
         NaiveUiResolver(),
+        VantResolver()
       ],
     }),
   ],

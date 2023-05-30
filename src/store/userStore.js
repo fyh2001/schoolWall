@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-24 12:14:35
- * @LastEditTime: 2023-04-26 16:55:36
+ * @LastEditTime: 2023-05-29 23:54:45
  * @FilePath: /schoolWall/src/store/userStore.js
  * @Description:
  */
@@ -14,6 +14,7 @@ export const useUserStore = defineStore("user", {
       userId: 0,
       username: "",
       nickname: "",
+      avatar: ""
     },
   }),
 

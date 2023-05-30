@@ -1,21 +1,14 @@
-<!--
- * @Author: 黄叶
- * @Date: 2023-05-12 11:13:42
- * @LastEditTime: 2023-05-31 00:27:37
- * @FilePath: /schoolWall/src/components/FormEditBox.vue
- * @Description: 
--->
 <template>
   <div @touchmove.prevent>
-    <transition name="window" appear>
+    <Transition name="window">
       <div
         class="fixed top-0 left-0 w-screen h-screen bg-gray-8 bg-opacity-20 z-9"
         v-if="show"
         @click="emit('close')"
       />
-    </transition>
+    </Transition>
 
-    <transition name="box" appear>
+    <Transition name="box">
       <div
         class="fixed left-0 bottom-0 w-full h-3/4 p-5 rounded-t-2xl bg-white z-10"
         v-if="show"
@@ -123,16 +116,16 @@
           </n-upload>
           <!--  @ -->
           <!-- <svg
-            class="w-7 h-7"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 32 32"
-          >
-            <path
-              d="M16 3A12.92 12.92 0 0 0 3 16v1a13 13 0 0 0 13 13h7v-2h-7A11 11 0 0 1 5 17v-1A10.94 10.94 0 0 1 16 5a10.64 10.64 0 0 1 11 11c0 3.59-1.4 5-3.66 5c-1.58 0-2.34-1.29-2.34-3v-8h-2v1.94A3.84 3.84 0 0 0 15.5 10a5.48 5.48 0 0 0-5.5 5.44v2.12A5.48 5.48 0 0 0 15.5 23a4.28 4.28 0 0 0 4-2.46A4.35 4.35 0 0 0 23.41 23c3.07 0 5.59-2 5.59-7A12.72 12.72 0 0 0 16 3zm3 14.56a3.5 3.5 0 0 1-7 0v-2.12a3.5 3.5 0 0 1 7 0z"
-              fill="currentColor"
-            ></path>
-          </svg> -->
+              class="w-7 h-7"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              viewBox="0 0 32 32"
+            >
+              <path
+                d="M16 3A12.92 12.92 0 0 0 3 16v1a13 13 0 0 0 13 13h7v-2h-7A11 11 0 0 1 5 17v-1A10.94 10.94 0 0 1 16 5a10.64 10.64 0 0 1 11 11c0 3.59-1.4 5-3.66 5c-1.58 0-2.34-1.29-2.34-3v-8h-2v1.94A3.84 3.84 0 0 0 15.5 10a5.48 5.48 0 0 0-5.5 5.44v2.12A5.48 5.48 0 0 0 15.5 23a4.28 4.28 0 0 0 4-2.46A4.35 4.35 0 0 0 23.41 23c3.07 0 5.59-2 5.59-7A12.72 12.72 0 0 0 16 3zm3 14.56a3.5 3.5 0 0 1-7 0v-2.12a3.5 3.5 0 0 1 7 0z"
+                fill="currentColor"
+              ></path>
+            </svg> -->
           <!--  话题 -->
           <svg
             class="w-7 h-7"
@@ -149,28 +142,28 @@
           </svg>
           <!-- 更多 -->
           <!-- <svg
-            class="w-7 h-7"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 1024 1024"
-          >
-            <path
-              d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"
-              fill="currentColor"
-            ></path>
-            <path
-              d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448s448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372s372 166.6 372 372s-166.6 372-372 372z"
-              fill="currentColor"
-            ></path>
-          </svg> -->
+              class="w-7 h-7"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              viewBox="0 0 1024 1024"
+            >
+              <path
+                d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"
+                fill="currentColor"
+              ></path>
+              <path
+                d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448s448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372s372 166.6 372 372s-166.6 372-372 372z"
+                fill="currentColor"
+              ></path>
+            </svg> -->
         </div>
       </div>
-    </transition>
+    </Transition>
   </div>
 </template>
 
 <script setup>
-import config from "../config/config"
+import config from "../../../config/config";
 
 const token = localStorage.getItem("token");
 const baseURL = config.baseURL;
@@ -236,7 +229,7 @@ const fileNamesList = ref([]);
 async function uploadHandle() {
   upload.value?.submit();
 
-  return await delay()
+  return await delay();
 }
 
 const delay = () => {

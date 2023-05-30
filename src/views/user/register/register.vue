@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 18:38:15
- * @LastEditTime: 2023-05-11 16:09:59
+ * @LastEditTime: 2023-05-29 22:27:03
  * @FilePath: /schoolWall/src/views/user/register/register.vue
  * @Description: 
 -->
@@ -84,6 +84,7 @@ const submit = async () => {
     formData.value.nickname != "" &&
     formData.value.password != ""
   ) {
+    console.log(formData.value)
     const res = await userApi.register(formData.value);
     console.log(res);
     if (res.code == 0) {

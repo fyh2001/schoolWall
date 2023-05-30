@@ -1,60 +1,71 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-19 23:39:57
- * @LastEditTime: 2023-04-29 13:34:14
+ * @LastEditTime: 2023-05-30 15:42:47
  * @FilePath: /schoolWall/src/api/reply.js
- * @Description: 
+ * @Description:
  */
-import request from "../utils/axios"
+import request from "../utils/axios";
 
-const replyApi = {}
+export default {
+  baseURL: "/reply",
 
-/**
- * 发布新的回复
- * @param {*} data 
- * @returns 
- */
-replyApi.add = (data) => {
+  /**
+   * 添加回复
+   * @param {*} reply 回复
+   * @returns 添加结果
+   */
+  addReply(reply){
     return request({
-        method: "POST",
-        url: "/reply/add",
-        data
-    })
-}
-
-/**
- * 通过帖子id获取所有回复
- * @param {*} postId 帖子id
- * @returns 
- */
-replyApi.getByPostId = (postId) => {
+      method: "POST",
+      url: `${this.baseURL}/addReply`,
+      data: reply
+    });
+  },
+  /**
+   * 根据帖子ID获取回复列表
+   * @param {*} postId 帖子ID
+   * @returns 回复列表
+   */
+  getReplyByPostId(postId) {
     return request({
-        method: 'GET',
-        url: `/reply/getByPostId?postId=${postId}`
-    })
-}
-
-/**
- * 给回复点赞
- * @param {*} replyId 回复id
- * @returns 
- */
-replyApi.giveLike = (replyId) => {
+      method: "GET",
+      url: `${this.baseURL}/getReplyByPostId?postId=${postId}`,
+    });
+  },
+  /**
+   * 根据回复ID获取回复详情
+   * @param {*} replyId 回复ID
+   * @returns 回复详情
+   */
+  getReplyByReplyId(replyId) {
     return request({
-        method: "POST",
-        url: `/reply/giveLike?replyId=${replyId}`
-    })
-}
-
-/**
- * 给回复取消点赞
- * @param {*} replyId 回复id
- * @returns 
- */
-replyApi.cancelLike = (replyId) => {
+      method: "GET",
+      url: `${this.baseURL}/getReplyByReplyId?replyId=${replyId}`,
+    });
+  },
+  /**
+   * 点赞回复
+   * @param {*} replyId 回复ID
+   * @returns 点赞结果
+   */
+  likeReply(replyId) {
     return request({
-        method: "DELETE",
-        url: `/reply/cancelLike?replyId=${replyId}`
-    })
-}
-export default replyApi
+      method: "POST",
+      url: `${this.baseURL}/likeReply`,
+      data: replyId
+    });
+  },
+  /**
+   * 取消点赞回复
+   * @param {*} replyId 回复ID
+   * @returns 取消点赞结果
+   */
+  unlikeReply(replyId) {
+    return request({
+      method: "POST",
+      url: `${this.baseURL}/unlikeReply`,
+      data: replyId
+    });
+  },
+};
