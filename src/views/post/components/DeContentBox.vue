@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-05-21 01:06:30
- * @LastEditTime: 2023-05-31 00:22:21
+ * @LastEditTime: 2023-06-07 13:36:08
  * @FilePath: /schoolWall/src/views/post/components/DeContentBox.vue
  * @Description: 
 -->
@@ -17,6 +17,7 @@
       />
     </div>
     <div
+      v-if="contentData.length > 0"
       class="mb-6"
       v-for="(data, index) in contentData"
       @click="emit('showFormEditBoxByDeskTypeIs2', data.id)"
@@ -28,7 +29,7 @@
             round
             size="small"
             style="width: 24px; height: 24px"
-            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+            :src="config.baseURL + '/file/download?filename=' + data.avatar"
           />
         </div>
         <!-- 昵称 -->
@@ -44,7 +45,7 @@
       </div>
       <div class="pl-9">
         <!-- 正文 -->
-        <div ref="imageRef" class="mb-5 text-4.2">{{ data.text }}</div>
+        <div ref="imageRef" class="mb-5 text-4">{{ data.text }}</div>
         <!-- 图片 -->
         <div class="mb-6">
           <div
@@ -76,7 +77,9 @@
             <!-- 点赞 -->
             <div
               class="flex justify-between items-center mr-4"
-              @click.stop="emit('changeLikeStatus', data.id, 2, data.likeStatus)"
+              @click.stop="
+                emit('changeLikeStatus', data.id, 2, data.likeStatus)
+              "
             >
               <n-icon
                 class="flex items-center"
@@ -111,17 +114,25 @@
                 :component="ChatboxEllipsesOutline"
               />
               <!-- 评论数 -->
-              <div class="ml-1 text-gray text-3.5">{{ data.secondReplies.length }}</div>
+              <div class="ml-1 text-gray text-3.5">
+                {{ data.secondReplies.length }}
+              </div>
             </div>
           </div>
         </div>
 
         <!-- 回复板块 -->
-        <div class="py-1 px-2 w-full rounded" style="background-color: #f9f9f9">
+        <div
+          class="py-1 px-2 w-full rounded"
+          style="background-color: #f9f9f9"
+          v-if="data.secondReplies.length > 0"
+        >
           <div
             class="reply"
-            v-for="(reply, replyIndex) in data.secondReplies"
-            @click.stop="emit('showFormEditBoxByDeskTypeIs3', data.id, reply.id)"
+            v-for="(reply, replyIndex) in data.secondReplies.slice(0, 5)"
+            @click.stop="
+              emit('showFormEditBoxByDeskTypeIs3', data.id, reply.id)
+            "
           >
             <div>
               <!-- 昵称 -->
@@ -135,9 +146,14 @@
                 </div>
                 <div class="inline" v-if="reply.deskType == 3">
                   <div class="inline text-black">回复</div>
-                  <div class="inline">{{ getReplyInfo(index, reply.deskSecondId).nickname }}</div>
+                  <div class="inline">
+                    {{ getReplyInfo(index, reply.deskSecondId).nickname }}
+                  </div>
                   <div
-                    v-if="getReplyInfo(index, reply.deskSecondId).userId == postUserId"
+                    v-if="
+                      getReplyInfo(index, reply.deskSecondId).userId ==
+                      postUserId
+                    "
                     class="inline-block p-0.5 border border-green-6 rounded scale-78"
                   >
                     楼主
@@ -148,9 +164,19 @@
               <div class="inline">:{{ reply.text }}</div>
             </div>
           </div>
+          <div
+            class="text-green-6"
+            v-if="data.secondReplies.length > 5"
+            @click.stop="
+              router.push('/moreReplies/' + data.id + '/' + postUserId)
+            "
+          >
+            查看更多回复({{ data.secondReplies.length }})
+          </div>
         </div>
       </div>
     </div>
+    <div  class="w-full h-40 text-center translate-y-20 text-4 text-gray" v-if="contentData.length == 0"> 还没有回复哦，快来回复一下吧～</div>
   </div>
 </template>
 
@@ -160,13 +186,15 @@ import LikeFilled from "@vicons/antd/LikeFilled";
 import LikeOutlined from "@vicons/antd/LikeOutlined";
 import ChatboxEllipsesOutline from "@vicons/ionicons5/ChatboxEllipsesOutline";
 import DeTabs from "../components/DeTabs.vue";
+import router from "../../../router/router";
 
-const emit = defineEmits(
+const emit = defineEmits([
   "changeLikeStatus",
   "showFormEditBoxByDeskTypeIs2",
   "showFormEditBoxByDeskTypeIs3",
-  "changeSelectedTabsIndex"
-);
+  "changeSelectedTabsIndex",
+  "showMoreReplyBox",
+]);
 
 const props = defineProps({
   postUserId: Number,
@@ -191,9 +219,11 @@ const props = defineProps({
 /**
  * 获取回复信息
  */
-const getReplyInfo = computed(() => (index ,deskId) => {
-  return props.contentData[index].secondReplies.find(item => item.id == deskId)
-})
+const getReplyInfo = computed(() => (index, deskId) => {
+  return props.contentData[index].secondReplies.find(
+    (item) => item.id == deskId
+  );
+});
 
 const imageBaseUrl = config.baseURL + "/file/download?filename=";
 
@@ -223,15 +253,18 @@ const imageStyleRule = computed(() => {
   return (length) => {
     if (length == 1) {
       return {
+        "border-radius": "8px",
         "max-height": imageRefClientWidth.value / 1.5 - 5 + "px",
       };
     } else if (length == 2) {
       return {
+        "border-radius": "8px",
         width: imageRefClientWidth.value / 2 - 5 + "px",
         height: imageRefClientWidth.value / 2 - 5 + "px",
       };
     } else if (length >= 3) {
       return {
+        "border-radius": "8px",
         width: imageRefClientWidth.value / 3 - 5 + "px",
         height: imageRefClientWidth.value / 3 - 5 + "px",
       };

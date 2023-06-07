@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-05-19 17:09:38
- * @LastEditTime: 2023-05-30 16:50:21
+ * @LastEditTime: 2023-06-07 19:08:33
  * @FilePath: /schoolWall/src/components/newUI/ContentBox.vue
  * @Description: 
 -->
@@ -21,7 +21,7 @@
             <n-avatar
               round
               size="small"
-              src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+              :src="config.baseURL + '/file/download?filename=' + data.avatar"
             />
           </div>
 
@@ -45,7 +45,12 @@
         <!-- 图片 -->
         <div
           v-if="data.images[0] != ''"
-          class="flex justify-between mt-5 w-full"
+          class="grid gap-4 mt-5 w-full"
+          :class="{
+            'grid-cols-1': data.images.length == 1,
+            'grid-cols-2': data.images.length == 2,
+            'grid-cols-3': data.images.length >= 3,
+          }"
         >
           <van-image
             class="overflow-hidden"
@@ -163,9 +168,10 @@ watch(
   () => {
     nextTick(() => {
       imageRefClientWidth.value = imageRef.value[0].clientWidth;
+      console.log(imageRefClientWidth.value);
     });
   },
-  { deep: true }
+  { deep: true, immediate: true }
 );
 
 /**
@@ -175,15 +181,24 @@ const imageStyleRule = computed(() => {
   return (length) => {
     if (length == 1) {
       return {
+        "border-radius": "8px",
         "max-height": imageRefClientWidth.value / 1.5 - 5 + "px",
       };
     } else if (length == 2) {
       return {
+        "border-radius": "8px",
         width: imageRefClientWidth.value / 2 - 5 + "px",
         height: imageRefClientWidth.value / 2 - 5 + "px",
       };
-    } else if (length >= 3) {
+    } else if (length == 3) {
       return {
+        "border-radius": "8px",
+        width: imageRefClientWidth.value / 3 - 5 + "px",
+        height: imageRefClientWidth.value / 3 - 5 + "px",
+      };
+    } else if (length > 3) {
+      return {
+        "border-radius": "8px",
         width: imageRefClientWidth.value / 3 - 5 + "px",
         height: imageRefClientWidth.value / 3 - 5 + "px",
       };
@@ -209,11 +224,7 @@ const imagePreview = (dataIndex, imageIndex) => {
   show.value = true;
 };
 
-onMounted(() => {
-  // nextTick(() => {
-  //   console.log(imageRef.value[0]);
-  // });
-});
+onMounted(() => {});
 </script>
 
 <style>

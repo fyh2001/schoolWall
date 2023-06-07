@@ -1,32 +1,21 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-18 21:42:04
- * @LastEditTime: 2023-05-31 00:16:55
+ * @LastEditTime: 2023-06-07 01:26:14
  * @FilePath: /schoolWall/src/App.vue
  * @Description: 
 -->
 <template>
   <GlobalProvider>
     <router-view v-slot="{ Component }">
-      <keep-alive>
-        <component
-          :is="Component"
-          :key="$route.name"
-          v-if="$route.meta.keepAlive"
-        />
-      </keep-alive>
-      <component
-        :is="Component"
-        :key="$route.name"
-        v-if="!$route.meta.keepAlive"
-      />
+      <component :is="Component" />
     </router-view>
-     <!-- 防止底部栏遮挡 -->
-     <div class="w-full h-12" />
+    
   </GlobalProvider>
 </template>
 
 <script setup>
+import { onBeforeRouteUpdate } from "vue-router";
 import GlobalProvider from "./components/GlobalProvider.vue";
 
 onMounted(() => {});

@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-18 23:33:34
- * @LastEditTime: 2023-05-30 16:49:32
+ * @LastEditTime: 2023-06-07 03:04:57
  * @FilePath: /schoolWall/src/views/home/home.vue
  * @Description: 
 -->
@@ -47,16 +47,6 @@
         @change-like-status-index="changeLikeStatus"
         @box-click="goToPostPage($event)"
       />
-      <!-- <n-spin :show="isLoading">
-        <Transition name="ContentBox" appear>
-          <ContentBox
-            :content-data="postsData"
-            type-of-display="post"
-            @changeLikeStatusIndex="changeLikeStatus"
-            @box-click="goToPostPage($event)"
-          />
-        </Transition>
-      </n-spin> -->
     </div>
   </div>
 </template>

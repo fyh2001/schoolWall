@@ -1,8 +1,8 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-05-04 21:26:45
- * @LastEditTime: 2023-05-19 15:14:48
- * @FilePath: /schoolWall/src/components/Global.vue
+ * @LastEditTime: 2023-06-06 03:52:55
+ * @FilePath: /schoolWall/src/components/GlobalProvider.vue
  * @Description: 
 -->
 <template>

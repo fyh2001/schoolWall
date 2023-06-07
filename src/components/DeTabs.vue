@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-21 11:25:50
- * @LastEditTime: 2023-05-30 04:20:59
+ * @LastEditTime: 2023-05-31 03:37:51
  * @FilePath: /schoolWall/src/components/DeTabs.vue
  * @Description: 
 -->
@@ -96,7 +96,7 @@ onMounted(() => {
 }
 .tabs-item {
   /* @apply flex-1 */
-  @apply w-full py-1 text-gray-5 text-center z-1 rounded-lg duration-300;
+  @apply w-full py-1 text-gray-5 text-center z-1 rounded-lg duration-300 ;
 }
 
 .tabs-item--selected {

@@ -254,7 +254,7 @@ const changeHandle = (options) => {
 };
 </script>
 
-<style>
+<style scoped>
 .n-input .n-input-wrapper {
   padding-left: 0;
   padding-right: 0;

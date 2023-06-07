@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-19 23:39:57
- * @LastEditTime: 2023-05-30 15:42:47
+ * @LastEditTime: 2023-06-01 16:57:56
  * @FilePath: /schoolWall/src/api/reply.js
  * @Description:
  */
@@ -36,12 +36,23 @@ export default {
   /**
    * 根据回复ID获取回复详情
    * @param {*} replyId 回复ID
-   * @returns 回复详情
+   * @returns 
    */
   getReplyByReplyId(replyId) {
     return request({
       method: "GET",
       url: `${this.baseURL}/getReplyByReplyId?replyId=${replyId}`,
+    })
+  },
+  /**
+   * 根据回复ID获取二级回复列表
+   * @param {*} replyId 回复ID
+   * @returns 回复详情
+   */
+  getSecondReplyByReplyId(replyId) {
+    return request({
+      method: "GET",
+      url: `${this.baseURL}/getSecondReplyByReplyId?replyId=${replyId}`,
     });
   },
   /**
