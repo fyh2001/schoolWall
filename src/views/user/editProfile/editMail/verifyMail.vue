@@ -1,18 +1,18 @@
 <!--
  * @Author: 黄叶
- * @Date: 2023-06-06 01:57:15
- * @LastEditTime: 2023-06-12 18:51:38
- * @FilePath: /schoolWall/src/views/login/loginByMail.vue
- * @Description: 
+ * @Date: 2023-06-12 11:02:59
+ * @LastEditTime: 2023-06-12 11:29:48
+ * @FilePath: /schoolWall/src/views/user/editProfile/editMail/verifyMail.vue
+ * @Description: 验证邮箱
 -->
 <template>
   <div>
     <!-- 标题 -->
     <div class="text-center py-4">
       <!-- 主标题 -->
-      <div class="my-3 text-5">邮箱登录</div>
+      <div class="my-3 text-5">邮箱验证</div>
       <!-- 副标题 -->
-      <div class="my-3 text-gray">未注册邮箱验证后会直接注册为帐号</div>
+      <div class="my-3 text-gray">为了您的账户安全，我们需要验证您的身份</div>
     </div>
     <!-- 表单 -->
     <n-form :model="formData">
@@ -53,20 +53,20 @@
           :disabled="isSubmitButtonDisabled"
           @click="submit"
         >
-          <div class="text-5">登 录</div>
+          <div class="text-5">下一步</div>
         </n-button>
       </n-form-item>
     </n-form>
 
     <!-- 其他方式登录 -->
-    <div class="text-center text-green-6" @click="goToOtherLogin">使用手机验证码快捷登录</div>
+    <div class="text-center text-green-6">使用其他方式验证</div>
   </div>
 </template>
 
 <script setup>
-import userApi from "../../api/user";
-import router from "../../router/router";
-import { useUserStore } from "../../store/userStore";
+import userApi from "../../../../api/user";
+import router from "../../../../router/router";
+import { useUserStore } from "../../../../store/userStore";
 
 const userStore = useUserStore();
 
@@ -94,9 +94,9 @@ watch(
   }
 );
 
-// 是否显示“登录”按钮
+// 是否显示“下一步”按钮
 const isSubmitButtonDisabled = ref(true);
-// 监听邮箱和验证码输入框的值，如果都不为空，则显示“登录”按钮
+// 监听邮箱和验证码输入框的值，如果都不为空，则显示“下一步”按钮
 watch(formData.value, (newData) => {
   if (newData.email != "" && newData.code != "") {
     isSubmitButtonDisabled.value = false;
@@ -143,7 +143,7 @@ const getMailCode = async () => {
   }, 1000);
 };
 
-// 提交表单，登录
+// 提交表单，下一步
 const submit = async () => {
   if (formData.value.email == "" && formData.value.code == "") {
     window.$message.error("请输入邮箱和验证码");
@@ -152,26 +152,10 @@ const submit = async () => {
   const res = await userApi.loginOrRegisterByMail(formData.value);
   console.log(res);
   if (res.code == 200) {
-    window.$message.success("登录成功");
-    localStorage.setItem("token", res.data.token);
-    userStore.update({
-      userId: res.data.id,
-      email: res.data.email,
-      nickname: res.data.nickname,
-      avatar: res.data.avatar,
-    });
-    console.log(userStore.user)
-    // 1秒后返回上一页
-    setTimeout(() => {
-      router.back();
-    }, 1000);
+    router.replace("/editMail/editMail");
   } else {
     window.$message.error(res.msg);
   }
-};
-
-const goToOtherLogin = () => {
-  router.replace("/loginByPhone");
 };
 </script>
 

@@ -1,53 +1,68 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-18 23:33:34
- * @LastEditTime: 2023-06-07 03:04:57
+ * @LastEditTime: 2023-06-13 00:10:17
  * @FilePath: /schoolWall/src/views/home/home.vue
  * @Description: 
 -->
 
 <template>
-  <div>
+  <div class="h-screen overflow-auto"  @scroll="containerScrollhandle($event)">
     <DeTabs
       class="sticky top-0 block mb-4 z-10"
+      tab-class="px-6 "
       :list="tabList"
-      :select-index="tabsSelectIndex"
-      @change="tabsSelectIndex = $event"
+      :selected-index="tabsSelectIndex"
+      @change-index="($event) => (tabsSelectIndex = $event)"
     />
-    <div class="px-3 overflow-hidden">
-      <FormEditBox
-        :show="isFormEditBoxShow"
-        @close="() => (isFormEditBoxShow = false)"
-        @submit="submitPost"
-      />
-      <FloatingButton
-        class="right-5 bottom-20"
-        v-if="!isFormEditBoxShow"
-        @click="isFormEditBoxShow = true"
-      >
-        <svg
-          class="w-6 h-6"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          viewBox="0 0 1024 1024"
+    <div class="px-3 overflow-auto">
+      <!-- 有数据 -->
+      <n-spin :show="isLoading">
+        <ContentBox
+          v-if="postsData.length > 0"
+          :content-data="postsData"
+          @change-like-status-index="changeLikeStatus"
+          @box-click="goToPostPage($event)"
+        />
+
+        <!-- 无数据 -->
+        <div
+          v-if="postsData.length == 0"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         >
-          <defs></defs>
-          <path
-            d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"
-            fill="currentColor"
-          ></path>
-          <path
-            d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z"
-            fill="currentColor"
-          ></path>
-        </svg>
-      </FloatingButton>
-      <ContentBox
-        :content-data="postsData"
-        @change-like-status-index="changeLikeStatus"
-        @box-click="goToPostPage($event)"
-      />
+          <div class="text-4.5 text-gray-4">暂无数据</div>
+        </div>
+      </n-spin>
     </div>
+    <!-- 弹窗和悬浮按钮 -->
+    <FormEditBox
+      :show="isFormEditBoxShow"
+      @close="() => (isFormEditBoxShow = false)"
+      @submit="submitPost"
+    />
+    <FloatingButton
+      class="right-5 bottom-40 transition duration-600 ease-in-out"
+      :class="[showFloatingButton ? 'translate-y-0' : 'translate-y-60']"
+      v-if="!isFormEditBoxShow"
+      @click="isFormEditBoxShow = true"
+    >
+      <svg
+        class="w-6 h-6"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        viewBox="0 0 1024 1024"
+      >
+        <defs></defs>
+        <path
+          d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"
+          fill="currentColor"
+        ></path>
+        <path
+          d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z"
+          fill="currentColor"
+        ></path>
+      </svg>
+    </FloatingButton>
   </div>
 </template>
 
@@ -57,7 +72,7 @@ import postApi from "../../api/post";
 import ContentBox from "../../components/newUI/ContentBox.vue";
 import FloatingButton from "../../components/FloatingButton.vue";
 import FormEditBox from "../../components/FormEditBox.vue";
-import DeTabs from "../../components/DeTabs.vue";
+import DeTabs from "../../components/newUI/DeTabs.vue";
 import router from "../../router/router";
 import { useUserStore } from "../../store/userStore";
 
@@ -84,7 +99,7 @@ const postDataFormat = (postData) => {
       data.text = textWraFormat(data.text);
       data.createTime = timeFormat.getFormateTime(data.createTime);
       data.updateTime = timeFormat.getFormateTime(data.updateTime);
-      data.images =  data.images.split(",");
+      data.images = data.images.split(",");
       if (data.isTop == 1) {
         postData.unshift(postData.splice(postData.indexOf(data), 1)[0]);
       }
@@ -101,6 +116,9 @@ let userPostsData = null;
 const getUserPosts = async () => {
   const res = await postApi.getPostByLoginUserId();
   if (res.code == 200) {
+    if (res.data == null) {
+      return [];
+    }
     return postDataFormat(res.data);
   }
 };
@@ -112,6 +130,9 @@ let userRepliedPostsData = null;
 const getUserRepliedPosts = async () => {
   const res = await postApi.getRepliedPostsByUserId();
   if (res.code == 200) {
+    if (res.data == null) {
+      return [];
+    }
     return postDataFormat(res.data);
   }
 };
@@ -123,6 +144,9 @@ let userLikedPostsData = null;
 const getUserLikedPosts = async () => {
   const res = await postApi.getLikedPostsByUserId();
   if (res.code == 200) {
+    if (res.data == null) {
+      return [];
+    }
     return postDataFormat(res.data);
   }
 };
@@ -139,6 +163,9 @@ const getLatestRepliedPost = async () => {
     res = await postApi.getAllPostByLogin();
   }
   if (res.code == 200) {
+    if (res.data == null) {
+      return [];
+    }
     res.data.sort((pre, cur) => {
       return pre.updateTime - cur.updateTime;
     });
@@ -158,6 +185,9 @@ const getLatestPosts = async () => {
     res = await postApi.getAllPostByLogin();
   }
   if (res.code == 200) {
+    if (res.data == null) {
+      return [];
+    }
     return postDataFormat(res.data);
   }
 };
@@ -165,59 +195,59 @@ const getLatestPosts = async () => {
 /**
  * 帖子数据
  */
-const postsData = ref();
+const postsData = ref([]);
 
 //tabs下标
 const tabsSelectIndex = ref(3);
-const isLoading = ref(false);
-watchEffect(async() => {
-    isLoading.value = true;
-    switch (tabsSelectIndex.value) {
-      case 0:
-        if (userPostsData != null) {
-          postsData.value = userPostsData;
-        } else {
-          postsData.value = await getUserPosts();
-          userPostsData = postsData.value;
-        }
-        break;
-      case 1:
-        if (userRepliedPostsData != null) {
-          postsData.value = userRepliedPostsData;
-        } else {
-          postsData.value = await getUserRepliedPosts();
-          userRepliedPostsData = postsData.value;
-        }
-        break;
-      case 2:
-        if (userLikedPostsData != null) {
-          postsData.value = userLikedPostsData;
-        } else {
-          postsData.value = await getUserLikedPosts();
-          userLikedPostsData = postsData.value;
-        }
-        break;
-      case 3:
-        if (latestRepliedPostData != null) {
-          postsData.value = latestRepliedPostData;
-        } else {
-          postsData.value = await getLatestRepliedPost();
-          latestRepliedPostData = postsData.value;
-        }
-        break;
-      case 4:
-        if (latestPostsData != null) {
-          postsData.value = latestPostsData;
-        } else {
-          postsData.value = await getLatestPosts();
-          latestPostsData = postsData.value;
-        }
-        break;
-    }
-    console.log(postsData.value);
-    isLoading.value = false;
-  },
-);
+const isLoading = ref(false); //是否正在加载
+watchEffect(async () => {
+  isLoading.value = true;
+  switch (tabsSelectIndex.value) {
+    case 0:
+      if (userPostsData != null) {
+        postsData.value = userPostsData;
+      } else {
+        postsData.value = await getUserPosts();
+        userPostsData = postsData.value;
+      }
+      break;
+    case 1:
+      if (userRepliedPostsData != null) {
+        postsData.value = userRepliedPostsData;
+      } else {
+        postsData.value = await getUserRepliedPosts();
+        userRepliedPostsData = postsData.value;
+      }
+      break;
+    case 2:
+      if (userLikedPostsData != null) {
+        postsData.value = userLikedPostsData;
+      } else {
+        postsData.value = await getUserLikedPosts();
+        userLikedPostsData = postsData.value;
+      }
+      break;
+    case 3:
+      if (latestRepliedPostData != null) {
+        postsData.value = latestRepliedPostData;
+      } else {
+        postsData.value = await getLatestRepliedPost();
+        latestRepliedPostData = postsData.value;
+      }
+      break;
+    case 4:
+      if (latestPostsData != null) {
+        postsData.value = latestPostsData;
+      } else {
+        postsData.value = await getLatestPosts();
+        latestPostsData = postsData.value;
+      }
+      break;
+  }
+  console.log(postsData.value);
+  isLoading.value = false;
+  showFloatingButton.value = true;
+});
 
 /**
  * 修改点赞状态
@@ -278,7 +308,6 @@ const goToPostPage = (id) => {
   }
 };
 
-
 const isFormEditBoxShow = ref(false);
 /**
  * 发布新帖子
@@ -303,7 +332,7 @@ const submitPost = async (formData, uploadHandle) => {
     console.log(images);
   }
 
-  formData.images = imagesFormat == "" ? null : imagesFormat
+  formData.images = imagesFormat == "" ? null : imagesFormat;
 
   const res = await postApi.addPost(formData);
   console.log(res);
@@ -315,6 +344,7 @@ const submitPost = async (formData, uploadHandle) => {
       replies: 0,
       createTime: "片刻之前",
       text: textWraFormat(res.data.text),
+      avatar: userStore.user.avatar,
       images: imagesFormat.split(","),
     };
     tabsSelectIndex.value = 3;
@@ -325,19 +355,23 @@ const submitPost = async (formData, uploadHandle) => {
   }
 };
 
-// //在页面离开时记录滚动位置
-// beforeRouteLeave = (to, from, next) => {
-//   this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-//     next()
-// }
+// 是否显示浮动按钮
+const showFloatingButton = ref(false);
+let oldScrollTop = 0; //上一次滚动的距离
+/**
+ * 监听滚动事件，控制浮动按钮的显示与隐藏
+ * @param {*} event
+ */
+const containerScrollhandle = (event) => {
+  if (!event.target) return;
+  const curScrollTop = event.target.scrollTop;
+  showFloatingButton.value = curScrollTop < oldScrollTop;
+  oldScrollTop = curScrollTop;
+};
 
-// router.beforeRouteEnter = (to, from, next) => {
-//     next(vm => {
-//       document.body.scrollTop = vm.scrollTop
-//     })
-//   }
-
-onMounted(() => {});
+onMounted(() => {
+  
+});
 onBeforeMount(() => {
   // tabsSelectIndex.value = 3;
 });

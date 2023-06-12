@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-05-18 14:14:50
- * @LastEditTime: 2023-06-07 20:45:12
+ * @LastEditTime: 2023-06-08 06:46:42
  * @FilePath: /schoolWall/src/config/config.js
  * @Description: 
  */

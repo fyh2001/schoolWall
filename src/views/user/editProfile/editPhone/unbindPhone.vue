@@ -1,18 +1,18 @@
 <!--
  * @Author: 黄叶
- * @Date: 2023-06-06 01:57:15
- * @LastEditTime: 2023-06-12 23:41:16
- * @FilePath: /schoolWall/src/views/login/loginByPhone.vue
- * @Description: 
+ * @Date: 2023-06-12 10:38:19
+ * @LastEditTime: 2023-06-12 23:41:58
+ * @FilePath: /schoolWall/src/views/user/editProfile/editPhone/unbindPhone.vue
+ * @Description: 解绑手机号
 -->
 <template>
     <div>
       <!-- 标题 -->
       <div class="text-center py-4">
         <!-- 主标题 -->
-        <div class="my-3 text-5">手机号登录</div>
+        <div class="my-3 text-5">解绑手机号</div>
         <!-- 副标题 -->
-        <div class="my-3 text-gray">未注册手机号验证后会直接注册为帐号</div>
+        <div class="my-3 text-gray">在这里解绑您的当前的手机号</div>
       </div>
       <!-- 表单 -->
       <n-form :model="formData">
@@ -53,20 +53,17 @@
             :disabled="isSubmitButtonDisabled"
             @click="submit"
           >
-            <div class="text-5">登 录</div>
+            <div class="text-5">确认解绑</div>
           </n-button>
         </n-form-item>
       </n-form>
-  
-      <!-- 其他方式登录 -->
-      <div class="text-center text-green-6" @click="goToOtherLogin">使用邮箱验证码快捷登录</div>
     </div>
   </template>
   
   <script setup>
-  import userApi from "../../api/user";
-  import router from "../../router/router";
-  import { useUserStore } from "../../store/userStore";
+  import userApi from "../../../../api/user";
+  import router from "../../../../router/router";
+  import { useUserStore } from "../../../../store/userStore";
   
   const userStore = useUserStore();
   
@@ -94,9 +91,9 @@
     }
   );
   
-  // 是否显示“登录”按钮
+  // 是否显示“下一步”按钮
   const isSubmitButtonDisabled = ref(true);
-  // 监听手机号和验证码输入框的值，如果都不为空，则显示“登录”按钮
+  // 监听手机号和验证码输入框的值，如果都不为空，则显示“下一步”按钮
   watch(formData.value, (newData) => {
     if (newData.phone != "" && newData.code != "") {
       isSubmitButtonDisabled.value = false;
@@ -143,22 +140,18 @@
     }, 1000);
   };
   
-  // 提交表单，登录
+  // 提交表单，确认绑定
   const submit = async () => {
     if (formData.value.phone == "" && formData.value.code == "") {
       window.$message.error("请输入手机号和验证码");
       return;
     }
-    const res = await userApi.loginOrRegisterByPhone(formData.value);
+    const res = await userApi.deletePhone(formData.value);
     console.log(res);
     if (res.code == 200) {
-      window.$message.success("登录成功");
-      localStorage.setItem("token", res.data.token);
+      window.$message.success("修改成功");
       userStore.update({
-        userId: res.data.id,
-        phone: res.data.phone,
-        nickname: res.data.nickname,
-        avatar: res.data.avatar,
+        phone: '',
       });
       // 1秒后返回上一页
       setTimeout(() => {
@@ -167,10 +160,6 @@
     } else {
       window.$message.error(res.msg);
     }
-  };
-  
-  const goToOtherLogin = () => {
-    router.replace("/login");
   };
   </script>
   

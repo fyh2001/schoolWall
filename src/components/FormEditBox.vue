@@ -1,23 +1,24 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-05-12 11:13:42
- * @LastEditTime: 2023-05-31 00:27:37
+ * @LastEditTime: 2023-06-12 01:56:57
  * @FilePath: /schoolWall/src/components/FormEditBox.vue
  * @Description: 
 -->
 <template>
-  <div @touchmove.prevent>
-    <transition name="window" appear>
+  <div>
+    <transition name="window">
       <div
+        @touchmove.prevent
         class="fixed top-0 left-0 w-screen h-screen bg-gray-8 bg-opacity-20 z-9"
         v-if="show"
         @click="emit('close')"
       />
     </transition>
 
-    <transition name="box" appear>
+    <transition name="box" >
       <div
-        class="fixed left-0 bottom-0 w-full h-3/4 p-5 rounded-t-2xl bg-white z-10"
+        class="fixed left-0 bottom-0 w-full min-h-3/4 p-5 rounded-t-2xl bg-white z-10"
         v-if="show"
       >
         <div
@@ -36,6 +37,7 @@
             ></path>
           </svg>
           <n-button
+          style="sticky top-0 left-0"
             strong
             secondary
             round
@@ -59,9 +61,9 @@
             type="textarea"
             size="small"
             :autosize="{
-              minRows: 3,
-              maxRows: 5,
+              minRows: 10,
             }"
+            maxlength="500"
           />
         </div>
         <div>
@@ -77,100 +79,22 @@
             :default-upload="false"
             name="file"
             multiple
+            :max="9"
             @onFinish="uploadHandle"
             @change="changeHandle"
           >
             点击上传
           </n-upload>
         </div>
-        <div
-          class="absolute bottom-0 left-0 flex justify-between items-center w-full h-10 p-4 border-t"
-        >
-          <!--  表情 -->
-          <svg
-            class="w-7 h-7"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 24 24"
-          >
-            <g fill="none">
-              <path
-                d="M10.25 10a1.25 1.25 0 1 0-2.499 0a1.25 1.25 0 0 0 2.499 0zm6 0a1.25 1.25 0 1 0-2.499 0a1.25 1.25 0 0 0 2.499 0zm-6.114 5.106a.75.75 0 0 0-.772 1.286c.767.46 1.72.67 2.636.67c.916 0 1.87-.21 2.636-.67a.75.75 0 1 0-.772-1.286c-.483.29-1.154.456-1.864.456c-.71 0-1.38-.166-1.864-.456zM22.002 12c0-5.524-4.478-10.002-10.002-10.002C6.476 1.998 2 6.476 2 12C1.999 17.523 6.476 22 12 22c5.524 0 10.002-4.478 10.002-10.001zM3.499 12a8.502 8.502 0 1 1 17.003 0a8.502 8.502 0 0 1-17.003 0z"
-                fill="currentColor"
-              ></path>
-            </g>
-          </svg>
-          <!--  图片 -->
-          <n-upload
-            class="w-7 h-7"
-            :action="baseURL + '/file/upload'"
-            accept="image/*"
-            :default-upload="false"
-          >
-            <svg
-              class="w-7 h-7"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              viewBox="0 0 28 28"
-            >
-              <g fill="none">
-                <path
-                  d="M21.75 3A3.25 3.25 0 0 1 25 6.25v15.5A3.25 3.25 0 0 1 21.75 25H6.25A3.25 3.25 0 0 1 3 21.75V6.25A3.25 3.25 0 0 1 6.25 3h15.5zm.583 20.4l-7.807-7.68a.75.75 0 0 0-.968-.07l-.084.07l-7.808 7.68c.183.065.38.1.584.1h15.5c.204 0 .4-.035.583-.1l-7.807-7.68l7.807 7.68zM21.75 4.5H6.25A1.75 1.75 0 0 0 4.5 6.25v15.5c0 .208.036.408.103.593l7.82-7.692a2.25 2.25 0 0 1 3.026-.117l.129.117l7.82 7.692c.066-.185.102-.385.102-.593V6.25a1.75 1.75 0 0 0-1.75-1.75zm-3.25 3a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5zm0 1.5a1 1 0 1 0 0 2a1 1 0 0 0 0-2z"
-                  fill="currentColor"
-                ></path>
-              </g>
-            </svg>
-          </n-upload>
-          <!--  @ -->
-          <!-- <svg
-            class="w-7 h-7"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 32 32"
-          >
-            <path
-              d="M16 3A12.92 12.92 0 0 0 3 16v1a13 13 0 0 0 13 13h7v-2h-7A11 11 0 0 1 5 17v-1A10.94 10.94 0 0 1 16 5a10.64 10.64 0 0 1 11 11c0 3.59-1.4 5-3.66 5c-1.58 0-2.34-1.29-2.34-3v-8h-2v1.94A3.84 3.84 0 0 0 15.5 10a5.48 5.48 0 0 0-5.5 5.44v2.12A5.48 5.48 0 0 0 15.5 23a4.28 4.28 0 0 0 4-2.46A4.35 4.35 0 0 0 23.41 23c3.07 0 5.59-2 5.59-7A12.72 12.72 0 0 0 16 3zm3 14.56a3.5 3.5 0 0 1-7 0v-2.12a3.5 3.5 0 0 1 7 0z"
-              fill="currentColor"
-            ></path>
-          </svg> -->
-          <!--  话题 -->
-          <svg
-            class="w-7 h-7"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 16 16"
-          >
-            <g fill="none">
-              <path
-                d="M6.992 2.592a.5.5 0 1 0-.984-.18L5.538 5H3.495a.5.5 0 0 0 0 1h1.86l-.728 4H2.5a.5.5 0 0 0 0 1h1.946l-.44 2.41a.5.5 0 0 0 .985.18L5.462 11h3.982l-.439 2.409a.5.5 0 0 0 .984.18l.472-2.59H12.5a.5.5 0 0 0 0-1h-1.857l.728-3.998H13.5a.5.5 0 1 0 0-1h-1.946l.439-2.409a.5.5 0 1 0-.984-.179l-.472 2.588H6.554l.438-2.41zM6.372 6h3.983L9.626 10H5.644l.728-4z"
-                fill="currentColor"
-              ></path>
-            </g>
-          </svg>
-          <!-- 更多 -->
-          <!-- <svg
-            class="w-7 h-7"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 1024 1024"
-          >
-            <path
-              d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"
-              fill="currentColor"
-            ></path>
-            <path
-              d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448s448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372s372 166.6 372 372s-166.6 372-372 372z"
-              fill="currentColor"
-            ></path>
-          </svg> -->
-        </div>
+        <!-- 防止底部遮挡 -->
+        <div class="w-full h-10"/>
       </div>
     </transition>
   </div>
 </template>
 
 <script setup>
-import config from "../config/config"
+import config from "../config/config";
 
 const token = localStorage.getItem("token");
 const baseURL = config.baseURL;
@@ -236,7 +160,7 @@ const fileNamesList = ref([]);
 async function uploadHandle() {
   upload.value?.submit();
 
-  return await delay()
+  return await delay();
 }
 
 const delay = () => {
@@ -269,7 +193,7 @@ const changeHandle = (options) => {
 
 .window-enter-active,
 .window-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .window-enter-from,
@@ -279,7 +203,7 @@ const changeHandle = (options) => {
 
 .box-enter-active,
 .box-leave-active {
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease-in-out;
 }
 
 .box-enter-from,

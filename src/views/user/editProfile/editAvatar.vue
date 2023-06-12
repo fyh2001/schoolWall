@@ -1,6 +1,13 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-06-07 05:29:21
+ * @LastEditTime: 2023-06-12 18:52:32
+ * @FilePath: /schoolWall/src/views/user/editProfile/editAvatar.vue
+ * @Description: 
+-->
+<!--
+ * @Author: 黄叶
+ * @Date: 2023-06-07 05:29:21
  * @LastEditTime: 2023-06-07 07:42:18
  * @FilePath: /schoolWall/src/views/user/editProfile/editAvatar.vue
  * @Description: 
@@ -73,7 +80,9 @@ const uploadSuccess = async (options) => {
 
     if (res.code === 200) {
       window.$message.success("修改成功");
-      userStore.updateAvatar(image.replace(/[\"\[\]]/g, ""))
+      userStore.update({
+        avatar: image.replace(/[\"\[\]]/g, "")
+      })
       
     } else {
       window.$message.error(res.msg);

@@ -1,14 +1,14 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-05-20 15:59:37
- * @LastEditTime: 2023-06-07 04:29:50
+ * @LastEditTime: 2023-06-13 00:10:59
  * @FilePath: /schoolWall/src/components/newUI/DeBottomTabBar.vue
  * @Description: 
 -->
 <template>
   <div>
     <div
-      class="fixed bottom-0 flex justify-around items-center w-full py-1.5 bg-white border-t overflow-hidden"
+      class="fixed bottom-0 flex justify-around items-center w-full py-1.5 bg-white border-t overflow-hidden z-99"
     >
       <div
         v-for="(data, index) in tabList"

@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-05-19 17:09:38
- * @LastEditTime: 2023-06-07 19:08:33
+ * @LastEditTime: 2023-06-12 05:43:22
  * @FilePath: /schoolWall/src/components/newUI/ContentBox.vue
  * @Description: 
 -->
@@ -9,10 +9,20 @@
   <div>
     <!-- 内容 -->
     <div
-      class="p-3 bg-white mb-4 rounded-md"
+      class="p-3 bg-white mb-3 rounded-md"
       v-for="(data, dataIndex) in contentData"
       @click.stop="emit('boxClick', data.id)"
     >
+      <!-- 置顶 -->
+      <div class="mb-2" v-if="data.isTop == 1">
+        <div class="flex items-center  text-3 text-red-6">
+          <n-icon class="mr-2" size="16" :component="ArrowUpCircle" />
+          <div>置顶</div>
+        </div>
+        <!-- 分割线 -->
+        <div class="my-2 border-t-0.5 border-gray-2" />
+      </div>
+
       <!-- header -->
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center">
@@ -22,6 +32,7 @@
               round
               size="small"
               :src="config.baseURL + '/file/download?filename=' + data.avatar"
+              object-fit="cover"
             />
           </div>
 
@@ -61,14 +72,6 @@
             @click.stop="imagePreview(dataIndex, imageIndex)"
           />
         </div>
-        <van-image-preview
-          v-model:show="show"
-          :images="images"
-          show-indicators
-          :loop="false"
-          :start-position="imagePreviewIndex"
-        >
-        </van-image-preview>
       </div>
       <!-- 点赞、评论、分享 -->
       <div class="flex justify-around">
@@ -134,6 +137,7 @@ import LikeOutlined from "@vicons/antd/LikeOutlined";
 import ShareOutline from "@vicons/ionicons5/ShareOutline";
 import ChatboxEllipsesOutline from "@vicons/ionicons5/ChatboxEllipsesOutline";
 import ChevronDownOutline from "@vicons/ionicons5/ChevronDownOutline";
+import ArrowUpCircle from "@vicons/tabler/ArrowUpCircle";
 import { showImagePreview } from "vant";
 import { nextTick } from "vue";
 
@@ -211,17 +215,20 @@ const imageStyleRule = computed(() => {
  * @param {*} dataIndex
  * @param {*} imageIndex
  */
-const show = ref(false);
-const imagePreviewIndex = ref(0);
-let images = ref([]);
 const imagePreview = (dataIndex, imageIndex) => {
   let temp = [];
   props.contentData[dataIndex].images.forEach((item) => {
     temp.push(imageBaseUrl + item);
   });
-  images.value = temp;
-  imagePreviewIndex.value = imageIndex;
-  show.value = true;
+
+  showImagePreview({
+    images: temp, // 图片数组
+    startPosition: imageIndex, // 开始位置索引，默认 0
+    closeable: true, // 是否显示关闭按钮
+    showIndicators: true, // 是否显示图片指示器
+    loop: false, // 是否开启循环播放
+    swipeDuration: 300, // 动画时长，单位为 ms
+  });
 };
 
 onMounted(() => {});

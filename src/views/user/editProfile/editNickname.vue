@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-06-07 06:44:47
- * @LastEditTime: 2023-06-07 07:43:52
+ * @LastEditTime: 2023-06-12 18:54:21
  * @FilePath: /schoolWall/src/views/user/editProfile/editNickname.vue
  * @Description: 
 -->
@@ -108,7 +108,9 @@ const submit = async() => {
   console.log(res)
   if (res.code === 200) {
     window.$message.success(res.data);
-    userStore.updateNickname(formData.value.nickname)
+    userStore.update({
+      nickname: formData.value.nickname
+    })
   } else {
     window.$message.error(res.msg);
   }

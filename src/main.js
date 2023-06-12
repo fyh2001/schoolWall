@@ -1,7 +1,7 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-18 21:42:04
- * @LastEditTime: 2023-06-07 04:25:59
+ * @LastEditTime: 2023-06-08 16:16:48
  * @FilePath: /schoolWall/src/main.js
  * @Description: 
  */
@@ -41,5 +41,8 @@ app.use(AsyncComputed)
 // const meta = document.createElement('meta')
 // meta.name = 'naive-ui-style'
 // document.head.appendChild(meta)
+
+import { ImagePreview } from 'vant';
+app.use(ImagePreview);
 
 app.mount("#app")

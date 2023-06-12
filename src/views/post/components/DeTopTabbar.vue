@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-05-20 22:37:38
- * @LastEditTime: 2023-06-07 13:31:49
+ * @LastEditTime: 2023-06-08 14:58:02
  * @FilePath: /schoolWall/src/views/post/components/DeTopTabbar.vue
  * @Description: 
 -->
@@ -24,6 +24,7 @@
             round
             size="small"
             :src="config.baseURL + '/file/download?filename=' + data[0].avatar"
+            object-fit="cover"
           />
         </div>
         <div>

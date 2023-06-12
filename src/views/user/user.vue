@@ -1,14 +1,25 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 18:37:53
- * @LastEditTime: 2023-06-07 18:44:09
+ * @LastEditTime: 2023-06-12 23:46:14
  * @FilePath: /schoolWall/src/views/user/user.vue
  * @Description: 
 -->
 <template>
   <div class="">
     <!-- 个人资料 -->
-    <div :class="['user_info', 'relative w-full']">
+    <div
+      :class="['user_info', 'relative w-full']"
+      :style="{
+        backgroundImage: `url( ${
+          config.baseURL +
+          '/file/download?filename=' +
+          userStore.user.background
+        } )`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }"
+    >
       <!-- 未登录 -->
       <div
         class="p-6 py-8 w-full h-full bg-black bg-opacity-40"
@@ -17,9 +28,12 @@
       >
         <div class="flex items-center justify-between mb-4">
           <!-- 头像 -->
-          <n-avatar round :size="76" :src="config.baseURL +
-              '/file/download?filename=' +
-              'boy_4.xml'" />
+          <n-avatar
+            round
+            :size="76"
+            :src="config.baseURL + '/file/download?filename=' + 'boy_4.png'"
+            object-fit="cover"
+          />
           <!-- 登录 -->
           <div class="flex items-center text-white font-bold">
             <div class="mr-2 text-4">点击登录</div>
@@ -34,6 +48,15 @@
         class="p-6 pt-8 w-full h-full bg-black bg-opacity-40"
         v-if="isLogined"
       >
+        <!-- 设置按钮 -->
+        <div class="flex justify-end -translate-y-1/2">
+          <n-icon
+            class="text-gray-3"
+            :size="24"
+            :component="Settings"
+            @click="router.push('/settings')"
+          />
+        </div>
         <!-- 头像与编辑资料按钮 -->
         <div class="flex items-center justify-between">
           <!-- 头像 -->
@@ -45,6 +68,7 @@
               '/file/download?filename=' +
               userStore.user.avatar
             "
+            object-fit="cover"
             @click.stop="showImagePreview = true"
           />
           <!-- 头像预览 -->
@@ -101,10 +125,11 @@
         <!-- 签名 -->
         <div
           class="flex items-center mb-4 text-gray-3"
+          :class="{ 'text-white': userStore.user.signature != '' }"
           @click.stop="router.push('/editProfile')"
         >
-          <n-icon class="mr-2" size="16" :component="Edit" />
-          <div>点击设置我的签名</div>
+          <n-icon class="mr-2" size="16" :component="Edit" v-if="userStore.user.signature == ''"/>
+          <div>{{ userStore.user.signature != '' ? userStore.user.signature : "点击设置我的签名" }}</div>
         </div>
         <!-- 获赞、关注、粉丝 -->
         <div class="flex items-center mb-4">
@@ -144,25 +169,26 @@
       />
       <!-- 详情 -->
       <div class="relative h-full p-2" style="background-color: #f2f1f6">
-        <div class="w-full" v-if="postsData.length > 0">
-          <div class="px-2 mb-2 text-3 text-gray-4">
-            全部动态({{ postsData.length }})
+        <n-spin :show="isLoading">
+          <div class="w-full" v-if="postsData.length > 0">
+            <div class="px-2 mb-2 text-3 text-gray-4">
+              全部动态({{ postsData.length }})
+            </div>
+            <ContentBox
+              :content-data="postsData"
+              @change-like-status-index="changeLikeStatus"
+              @box-click="goToPostPage($event)"
+            />
           </div>
-          <ContentBox
-            :content-data="postsData"
-            @change-like-status-index="changeLikeStatus"
-            @box-click="goToPostPage($event)"
-          />
-        </div>
 
-        <!-- 无数据时显示 -->
-        <div
-          v-if="postsData.length == 0 && isLogined"
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray"
-        >
-          咦，什么都没找到...
-        </div>
-
+          <!-- 无数据时显示 -->
+          <div
+            v-if="postsData.length == 0 && isLogined"
+            class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray"
+          >
+            咦，什么都没找到...
+          </div>
+        </n-spin>
         <!-- 未登录时 -->
         <div>
           <div
@@ -178,6 +204,7 @@
 </template>
 
 <script setup>
+import Settings from "@vicons/tabler/Settings";
 import Edit from "@vicons/carbon/Edit";
 import ManOutlined from "@vicons/antd/ManOutlined";
 import WomanOutlined from "@vicons/antd/WomanOutlined";
@@ -194,6 +221,7 @@ import router from "../../router/router";
 const userStore = useUserStore();
 
 const isLogined = localStorage.getItem("token") ? true : false;
+const isLoading = ref(false); //是否正在加载
 
 // tab栏内容
 const tabList = ["动态", "点赞", "评论", "收藏", "关注", "粉丝"];
@@ -207,14 +235,16 @@ const getUserData = async () => {
   const res = await userApi.getUserByUserId(userStore.user.userId);
   console.log(res);
   if (res.code == 200) {
-    userStore.updateUser({
+    userStore.update({
       userId: res.data.id,
       email: res.data.email,
       phone: res.data.phone,
       nickname: res.data.nickname,
       gender: res.data.gender,
       avatar: res.data.avatar,
-      background: res.data.background
+      signature: res.data.signature,
+      background: res.data.background,
+      diyBackground: res.data.diy_background,
     });
   }
 };
@@ -226,14 +256,18 @@ const postsData = ref([]);
  * 获取用户的帖子
  */
 const getPostByUserId = async () => {
+  isLoading.value = true;
   const res = await postApi.getPostByUserId(userStore.user.userId);
+  console.log(res);
   if (res.code == 200) {
     if (res.data == null) {
       postsData.value = [];
+      isLoading.value = false;
       return;
     }
     postsData.value = postDataFormat.postDataFormat(res.data);
   }
+  isLoading.value = false;
 };
 
 /**
@@ -275,11 +309,11 @@ const showImagePreview = ref(false);
 const imagePreviewIndex = ref(0);
 
 onMounted(() => {
-  getUserData()
+  getUserData();
   getPostByUserId();
 });
 
-console.log(userStore.user)
+console.log(userStore.user);
 </script>
 
 <style>

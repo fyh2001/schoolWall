@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-04-19 10:53:29
- * @LastEditTime: 2023-06-07 20:38:06
+ * @LastEditTime: 2023-06-08 15:37:20
  * @FilePath: /schoolWall/src/views/post/post.vue
  * @Description: 
 -->
@@ -164,8 +164,6 @@ const submitReply = async (formData, uploadHandle) => {
         ? (imagesFormat = item.replace(/[\[\]\"]/g, ""))
         : (imagesFormat += "," + item.replace(/[\[\]\"]/g, ""));
     });
-
-    console.log(images);
   }
   formData = {
     ...formData,
@@ -174,20 +172,28 @@ const submitReply = async (formData, uploadHandle) => {
     deskSecondId: deskSecondId.value,
     deskType: deskType.value,
   };
-
-  console.log(formData);
   const res = await replyApi.addReply(formData);
+  console.log(res);
   if (res.code == 200) {
     res.data = {
       ...res.data,
       nickname: userStore.user.nickname,
-      likes: 0,
       createTime: "片刻之前",
       text: textWraFormat(res.data.text),
-      images: imagesFormat.split(","),
+      secondReplies: [],
+      likes: 0,
+      replies: 0,
+      collects: 0,
+      likeStatus: 0,
+      collectStatus: 0,
+      avatar: userStore.user.avatar,
+      images: imagesFormat == '' ? [''] : imagesFormat.split(','),
     };
-    if (deskType.value == 1) {
+    if (res.data.deskType == 1) {
+      console.log(replyData.value)
       replyData.value.push(res.data);
+      console.log(replyData.value)
+
     } else {
       replyData.value.forEach((item, index) => {
         if (item.id == deskId.value) {

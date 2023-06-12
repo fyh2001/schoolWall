@@ -1,7 +1,7 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-05-21 01:06:30
- * @LastEditTime: 2023-06-07 13:36:08
+ * @LastEditTime: 2023-06-08 15:40:44
  * @FilePath: /schoolWall/src/views/post/components/DeContentBox.vue
  * @Description: 
 -->
@@ -30,6 +30,7 @@
             size="small"
             style="width: 24px; height: 24px"
             :src="config.baseURL + '/file/download?filename=' + data.avatar"
+            object-fit="cover"
           />
         </div>
         <!-- 昵称 -->
@@ -61,12 +62,14 @@
               @click.stop="imagePreview(dataIndex, imageIndex)"
             />
           </div>
+          <!-- 图片预览 -->
           <van-image-preview
             v-model:show="show"
             :images="images"
             show-indicators
             :loop="false"
             :start-position="imagePreviewIndex"
+            
           >
           </van-image-preview>
         </div>
@@ -195,6 +198,13 @@ const emit = defineEmits([
   "changeSelectedTabsIndex",
   "showMoreReplyBox",
 ]);
+
+watch(
+  () => props.contentData,
+  (newData) => {
+    console.log(newData)
+  }
+);
 
 const props = defineProps({
   postUserId: Number,

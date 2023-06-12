@@ -1,12 +1,15 @@
 <!--
  * @Author: 黄叶
  * @Date: 2023-05-31 00:39:57
- * @LastEditTime: 2023-06-02 00:17:58
+ * @LastEditTime: 2023-06-08 17:30:23
  * @FilePath: /schoolWall/src/views/post/moreReplies.vue
  * @Description: 
 -->
 <template>
-  <div class="absolute top-0 left-0 bg-white z-10" v-if="repliesData != null">
+  <div
+    class="absolute top-0 left-0 w-full bg-white z-10"
+    v-if="repliesData != null"
+  >
     <!-- header -->
     <div class="sticky top-0 flex px-5 py-4 border-b-0.5 bg-white z-21">
       <n-icon
@@ -31,7 +34,8 @@
             round
             size="small"
             style="width: 24px; height: 24px"
-            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+            object-fit="cover"
+            :src="config.baseURL + '/file/download?filename=' + userStore.user.avatar"
           />
         </div>
         <!-- 昵称 -->
@@ -83,7 +87,16 @@
           </div>
           <div class="flex justify-between items-center">
             <!-- 点赞 -->
-            <div class="flex justify-between items-center mr-4" @click.stop="changeLikeStatus(repliesData.id, repliesData.deskType, repliesData.likeStatus)">
+            <div
+              class="flex justify-between items-center mr-4"
+              @click.stop="
+                changeLikeStatus(
+                  repliesData.id,
+                  repliesData.deskType,
+                  repliesData.likeStatus
+                )
+              "
+            >
               <n-icon
                 class="flex items-center"
                 :class="
@@ -137,6 +150,7 @@
               round
               size="small"
               style="width: 24px; height: 24px"
+              object-fit="cover"
               :src="config.baseURL + '/file/download?filename=' + data.avatar"
             />
           </div>
@@ -203,7 +217,12 @@
             </div>
             <div class="flex justify-between items-center">
               <!-- 点赞 -->
-              <div class="flex justify-between items-center mr-4" @click.stop="changeLikeStatus(data.id, data.deskType, data.likeStatus)">
+              <div
+                class="flex justify-between items-center mr-4"
+                @click.stop="
+                  changeLikeStatus(data.id, data.deskType, data.likeStatus)
+                "
+              >
                 <n-icon
                   class="flex items-center"
                   :class="
@@ -261,6 +280,9 @@ import replyApi from "../../api/reply";
 import timeFormat from "../../utils/timeFormat";
 import router from "../../router/router";
 import DeFormEditBox from "./components/DeFormEditBox.vue";
+import { useUserStore } from "../../store/userStore";
+
+const userStore = useUserStore();
 
 const props = defineProps({
   replyId: String,

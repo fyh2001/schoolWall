@@ -1,102 +1,146 @@
 /*
  * @Author: 黄叶
  * @Date: 2023-04-18 23:10:07
- * @LastEditTime: 2023-06-07 11:03:33
+ * @LastEditTime: 2023-06-13 01:25:12
  * @FilePath: /schoolWall/src/router/router.js
  * @Description:
  */
 import { createRouter, createWebHistory } from "vue-router";
-import Index from "../views/index/index.vue";
-import Home from "../views/home/home.vue";
-import Post from "../views/post/post.vue";
-import MoreReplies from "../views/post/moreReplies.vue";
-import User from "../views/user/user.vue";
-import EditProfile from "../views/user/editProfile/editProfile.vue";
-import EditAvatar from "../views/user/editProfile/editAvatar.vue";
-import EditNickname from "../views/user/editProfile/editNickname.vue"
-import Login from "../views/login/index.vue";
-import LoginByPhone from "../views/login/loginByPhone.vue";
-import LoginByMail from "../views/login/loginByMail.vue";
-import Message from "../views/message/message.vue";
-import Test from "../views/test/test.vue";
 
 const routes = [
   {
     path: "/",
-    component: Index,
+    component: () => import('../views/index/index.vue'),
     children: [
       {
         path: "",
-        component: Home,
-        name: Home,
+        component: () => import('../views/home/home.vue'),
+        name: 'Home',
         meta: {
           // keepAlive: true,
         },
       },
       {
         path: "user",
-        component: User,
-        name: User,
+        component: () => import('../views/user/user.vue'),
+        name: 'User',
       },
       {
-        path: "message",
-        component: Message,
-        name: Message,
+        path: "updateLog",
+        component: () => import('../views/updateLog/updateLog.vue'),
+        name: 'UpdateLog',
       },
     ],
-    meta: {
-      // keepAlive: true,
-    },
   },
   {
     path: "/post/:id",
-    component: Post,
-    name: Post,
+    component: () => import('../views/post/post.vue'),
+    name: 'Post',
     props: true,
-    meta: {
-      keepAlive: true,
-    },
   },
   {
     path: "/moreReplies/:replyId/:postUserId",
-    component: MoreReplies,
-    name: MoreReplies,
+    component: () => import('../views/post/moreReplies.vue'),
+    name: 'MoreReplies',
     props: true,
   },
   {
     path: "/login",
-    component: Login,
+    component: () => import('../views/login/index.vue'),
     children: [
       {
         path: "",
-        component: LoginByMail,
-        name: LoginByMail,
+        component: () => import('../views/login/loginByMail.vue'),
+        name: 'LoginByMail',
       },
       {
         path: "/loginByPhone",
-        component: LoginByPhone,
-        name: LoginByPhone,
+        component:() => import('../views/login/loginByPhone.vue'),
+        name: 'LoginByPhone',
       }
     ]
   },
   {
+    path: "/settings",
+    component: () => import('../views/user/settings.vue'),
+    name: 'Settings',
+  },
+  {
     path: "/editProfile",
-    component: EditProfile,
-    name: EditProfile,
+    component: () => import('../views/user/editProfile/editProfile.vue'),
+    name: 'EditProfile',
   },
   {
     path: "/editAvatar",
-    component: EditAvatar,
-    name: EditAvatar,
+    component: () => import('../views/user/editProfile/editAvatar.vue'),
+    name: 'EditAvatar',
+  },
+  {
+    path: "/editBackground",
+    component: () => import('../views/user/editProfile/editBackground.vue'),
+    name: 'EditBackground',
   },
   {
     path: "/editNickname",
-    component: EditNickname,
-    name: EditNickname
+    component: () => import('../views/user/editProfile/editNickname.vue'),
+    name:'EditNickname'
+  },
+  {
+    path: "/editBinding",
+    component: () => import('../views/user/editProfile/editBinding.vue'),
+    name: 'EditBinding',
+  },
+  {
+    path: "/editMail",
+    component: () => import('../views/user/editProfile/editMail/index.vue'),
+    children: [
+      {
+        path: "",
+        component: () => import('../views/user/editProfile/editMail/verifyMail.vue'),
+        name: 'VerifyMail',
+      },
+      {
+        path: "editMail",
+        component: () => import('../views/user/editProfile/editMail/editMail.vue'),
+        name: 'EditMail',
+      },
+      {
+        path: "bindMail",
+        component: () => import('../views/user/editProfile/editMail/bindMail.vue'),
+        name: 'BindMail',
+      }
+    ]
+  },
+  // 
+  {
+    path: "/editPhone",
+    component: () => import('../views/user/editProfile/editPhone/index.vue'),
+   children: [
+      {
+        path: "verifyPhone",
+        component: () => import('../views/user/editProfile/editPhone/verifyPhone.vue'),
+        name: 'VerifyPhone',
+      },
+      {
+        path: "editPhone",
+        component: () => import('../views/user/editProfile/editPhone/editPhone.vue'),
+        name: 'EditPhone',
+      },
+      {
+        path: "bindPhone",
+        component: () => import('../views/user/editProfile/editPhone/bindPhone.vue'),
+        name: 'BindPhone',
+      },
+      {
+        path: "unbindPhone",
+        component: () => import('../views/user/editProfile/editPhone/unbindPhone.vue'),
+        name: 'UnbindPhone',
+      }
+    ]
   },
   {
     path: "/test",
-    component: Test,
+    component: () => import('../views/test/test.vue'),
   },
 ];
 
